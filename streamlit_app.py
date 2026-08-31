@@ -4,7 +4,25 @@ from PIL import Image
 import json
 import numpy as np
 import os
-from werkzeug.utils import secure_filename
+import streamlit as st
+import tensorflow as tf
+from PIL import Image
+import numpy as np
+
+uploaded_file = st.file_uploader("Upload Crop Image", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    # Read image directly from Streamlit memory buffer
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded Image", use_container_width=True)
+
+    # Preprocess image for your Keras model
+    image_resized = image.resize((224, 224)) # Adjust to your model's input size
+    img_array = np.array(image_resized) / 255.0
+    img_array = np.expand_dims(img_array, axis=0)
+
+    # Predict
+    # predictions = model.predict(img_array)
 
 
 # =========================================================
