@@ -2,3 +2,11 @@ venv/
 .venv/
 __pycache__/
 *.pyc
+
+dataset/
+static/uploads/
+venv_old/
+
+dataset/
+static/uploads/
+venv_old/
