@@ -1,9 +1,17 @@
-from flask import Flask, render_template, request, session, redirect
-import tensorflow as tf
-from PIL import Image
+
+import os
 import json
 import numpy as np
-import os
+import tensorflow as tf
+
+from PIL import Image
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    session
+)
 from werkzeug.utils import secure_filename
 
 
@@ -28,20 +36,14 @@ TRANSLATIONS = {
 
     "en": {
 
-        # -------------------------------------------------
         # NAVIGATION
-        # -------------------------------------------------
-
         "home": "Home",
         "detect": "Detect Disease",
         "performance": "Performance",
         "about": "About",
         "get_started": "Get Started",
 
-        # -------------------------------------------------
         # HOME
-        # -------------------------------------------------
-
         "tagline": "🌿 AI-POWERED AGRICULTURE",
         "hero_title": "Protect Your Crops",
         "hero_ai": "With AI",
@@ -99,10 +101,7 @@ TRANSLATIONS = {
         "step_learn_text":
             "View disease information and prevention tips.",
 
-        # -------------------------------------------------
         # PERFORMANCE
-        # -------------------------------------------------
-
         "performance_tagline": "AI MODEL EVALUATION",
 
         "performance_title": "Model Performance",
@@ -166,10 +165,7 @@ TRANSLATIONS = {
         "try_detection": "🔍 Try Disease Detection",
         "back_home": "🏠 Back to Home",
 
-        # -------------------------------------------------
         # ABOUT
-        # -------------------------------------------------
-
         "about_tagline": "ABOUT AGROZYEN AI",
 
         "about_title": "Smart Agriculture With AI",
@@ -238,10 +234,7 @@ TRANSLATIONS = {
         "about_cta_text":
             "Upload a crop leaf image and let AgroZyen AI analyze it.",
 
-        # -------------------------------------------------
         # DETECT
-        # -------------------------------------------------
-
         "detect_tagline": "AI DISEASE DETECTION",
 
         "detect_title": "Detect Crop Disease",
@@ -259,10 +252,7 @@ TRANSLATIONS = {
         "supported_formats":
             "Supported formats: JPG, JPEG, PNG",
 
-        # -------------------------------------------------
         # RESULT
-        # -------------------------------------------------
-
         "result_tagline": "AI DETECTION RESULT",
 
         "result_title": "Disease Detection Result",
@@ -300,10 +290,18 @@ TRANSLATIONS = {
         "prediction_error":
             "Error while analyzing the image.",
 
-        # -------------------------------------------------
-        # FOOTER
-        # -------------------------------------------------
+        # INVALID IMAGE
+        "invalid_image":
+            "Please upload a clear Corn, Potato, or Tomato leaf image.",
 
+        "invalid_image_title":
+            "Invalid Image",
+
+        "invalid_image_description":
+            "The uploaded image does not appear to be a suitable crop leaf image. "
+            "Please upload a clear image of a Corn, Potato, or Tomato leaf.",
+
+        # FOOTER
         "footer":
             "AI-powered crop disease detection system."
     },
@@ -315,14 +313,12 @@ TRANSLATIONS = {
 
     "hi": {
 
-        # NAVIGATION
         "home": "होम",
         "detect": "रोग पहचानें",
         "performance": "प्रदर्शन",
         "about": "हमारे बारे में",
         "get_started": "शुरू करें",
 
-        # HOME
         "tagline": "🌿 AI-आधारित कृषि",
         "hero_title": "अपनी फसलों की रक्षा करें",
         "hero_ai": "AI के साथ",
@@ -361,22 +357,25 @@ TRANSLATIONS = {
             "फसल रोग की पहचान केवल कुछ आसान चरणों में करें।",
 
         "step_upload": "अपलोड",
+
         "step_upload_text":
             "प्रभावित फसल के पत्ते की तस्वीर अपलोड करें।",
 
         "step_analyze": "विश्लेषण",
+
         "step_analyze_text":
             "AI पत्ते के दृश्य पैटर्न का विश्लेषण करता है।",
 
         "step_detect": "पहचान",
+
         "step_detect_text":
             "सिस्टम संभावित रोग की पहचान करता है।",
 
         "step_learn": "जानकारी",
-        "step_learn_text":
-            "रोग की जानकारी और बचाव के उपाय देखें।",
 
-        # PERFORMANCE
+        "step_learn_text":
+            "रोग की जानकारी और बचाव के उपाय देखें.",
+
         "performance_tagline": "AI मॉडल मूल्यांकन",
         "performance_title": "मॉडल का प्रदर्शन",
 
@@ -436,9 +435,7 @@ TRANSLATIONS = {
         "try_detection": "🔍 रोग पहचानने का प्रयास करें",
         "back_home": "🏠 होम पर वापस जाएँ",
 
-        # ABOUT
         "about_tagline": "AGROZYEN AI के बारे में",
-
         "about_title": "AI के साथ स्मार्ट कृषि",
 
         "about_description":
@@ -503,7 +500,6 @@ TRANSLATIONS = {
         "about_cta_text":
             "फसल के पत्ते की तस्वीर अपलोड करें और AgroZyen AI को उसका विश्लेषण करने दें।",
 
-        # DETECT
         "detect_tagline": "AI रोग पहचान",
 
         "detect_title": "फसल रोग पहचानें",
@@ -519,9 +515,7 @@ TRANSLATIONS = {
         "supported_formats":
             "समर्थित प्रारूप: JPG, JPEG, PNG",
 
-        # RESULT
         "result_tagline": "AI पहचान परिणाम",
-
         "result_title": "रोग पहचान परिणाम",
 
         "prediction": "भविष्यवाणी",
@@ -548,7 +542,16 @@ TRANSLATIONS = {
         "prediction_error":
             "तस्वीर का विश्लेषण करते समय त्रुटि हुई।",
 
-        # FOOTER
+        "invalid_image":
+            "कृपया मक्का, आलू या टमाटर के पत्ते की साफ तस्वीर अपलोड करें।",
+
+        "invalid_image_title":
+            "अमान्य तस्वीर",
+
+        "invalid_image_description":
+            "अपलोड की गई तस्वीर उपयुक्त फसल के पत्ते की तस्वीर नहीं लगती। "
+            "कृपया मक्का, आलू या टमाटर के पत्ते की साफ तस्वीर अपलोड करें।",
+
         "footer":
             "AI आधारित फसल रोग पहचान प्रणाली।"
     },
@@ -560,14 +563,12 @@ TRANSLATIONS = {
 
     "mr": {
 
-        # NAVIGATION
         "home": "मुख्यपृष्ठ",
         "detect": "रोग ओळखा",
         "performance": "कामगिरी",
         "about": "आमच्याबद्दल",
         "get_started": "सुरुवात करा",
 
-        # HOME
         "tagline": "🌿 AI-आधारित शेती",
         "hero_title": "तुमच्या पिकांचे संरक्षण करा",
         "hero_ai": "AI च्या मदतीने",
@@ -625,7 +626,6 @@ TRANSLATIONS = {
         "step_learn_text":
             "रोगाची माहिती आणि प्रतिबंधक उपाय पहा.",
 
-        # PERFORMANCE
         "performance_tagline": "AI मॉडेल मूल्यांकन",
 
         "performance_title": "मॉडेलची कामगिरी",
@@ -686,7 +686,6 @@ TRANSLATIONS = {
         "try_detection": "🔍 रोग ओळखण्याचा प्रयत्न करा",
         "back_home": "🏠 मुख्यपृष्ठावर परत जा",
 
-        # ABOUT
         "about_tagline": "AGROZYEN AI बद्दल",
 
         "about_title": "AI सह स्मार्ट शेती",
@@ -753,7 +752,6 @@ TRANSLATIONS = {
         "about_cta_text":
             "पिकाच्या पानाची प्रतिमा अपलोड करा आणि AgroZyen AI ला तिचे विश्लेषण करू द्या.",
 
-        # DETECT
         "detect_tagline": "AI रोग ओळख",
 
         "detect_title": "पीक रोग ओळखा",
@@ -763,42 +761,61 @@ TRANSLATIONS = {
             "तिचे विश्लेषण करून संभाव्य रोग ओळखेल.",
 
         "select_image": "पिकाच्या पानाची प्रतिमा निवडा",
+
         "choose_image": "प्रतिमा निवडा",
+
         "analyze_image": "🔍 प्रतिमेचे विश्लेषण करा",
 
         "supported_formats":
             "समर्थित स्वरूप: JPG, JPEG, PNG",
 
-        # RESULT
         "result_tagline": "AI ओळख परिणाम",
 
         "result_title": "रोग ओळख परिणाम",
 
         "prediction": "अंदाज",
+
         "disease_detected": "ओळखलेला रोग",
+
         "healthy_crop": "निरोगी पीक",
 
         "crop": "पीक",
+
         "confidence": "विश्वास",
+
         "confidence_level": "विश्वास पातळी",
 
         "high": "उच्च",
+
         "moderate": "मध्यम",
+
         "low": "कमी",
 
         "about_disease": "या स्थितीबद्दल",
+
         "symptoms": "सामान्य लक्षणे",
+
         "recommendation": "शिफारस",
 
         "no_symptoms": "रोगाची कोणतीही लक्षणे आढळली नाहीत.",
 
         "analyze_another": "🔍 दुसऱ्या प्रतिमेचे विश्लेषण करा",
+
         "return_home": "🏠 मुख्यपृष्ठावर परत जा",
 
         "prediction_error":
             "प्रतिमेचे विश्लेषण करताना त्रुटी आली.",
 
-        # FOOTER
+        "invalid_image":
+            "कृपया मका, बटाटा किंवा टोमॅटोच्या पानाचा स्पष्ट फोटो अपलोड करा.",
+
+        "invalid_image_title":
+            "अवैध प्रतिमा",
+
+        "invalid_image_description":
+            "अपलोड केलेली प्रतिमा योग्य पिकाच्या पानाची प्रतिमा दिसत नाही. "
+            "कृपया मका, बटाटा किंवा टोमॅटोच्या पानाचा स्पष्ट फोटो अपलोड करा.",
+
         "footer":
             "AI-आधारित पीक रोग ओळख प्रणाली."
     },
@@ -810,14 +827,12 @@ TRANSLATIONS = {
 
     "te": {
 
-        # NAVIGATION
         "home": "హోమ్",
         "detect": "వ్యాధిని గుర్తించండి",
         "performance": "పనితీరు",
         "about": "మా గురించి",
         "get_started": "ప్రారంభించండి",
 
-        # HOME
         "tagline": "🌿 AI ఆధారిత వ్యవసాయం",
         "hero_title": "మీ పంటలను రక్షించండి",
         "hero_ai": "AI తో",
@@ -875,7 +890,6 @@ TRANSLATIONS = {
         "step_learn_text":
             "వ్యాధి సమాచారం మరియు నివారణ చిట్కాలను చూడండి.",
 
-        # PERFORMANCE
         "performance_tagline": "AI మోడల్ మూల్యాంకనం",
 
         "performance_title": "మోడల్ పనితీరు",
@@ -936,7 +950,6 @@ TRANSLATIONS = {
         "try_detection": "🔍 వ్యాధి గుర్తింపును ప్రయత్నించండి",
         "back_home": "🏠 హోమ్‌కు తిరిగి వెళ్లండి",
 
-        # ABOUT
         "about_tagline": "AGROZYEN AI గురించి",
 
         "about_title": "AI తో స్మార్ట్ వ్యవసాయం",
@@ -1002,7 +1015,6 @@ TRANSLATIONS = {
         "about_cta_text":
             "పంట ఆకు చిత్రాన్ని అప్‌లోడ్ చేసి AgroZyen AI దాన్ని విశ్లేషించనివ్వండి.",
 
-        # DETECT
         "detect_tagline": "AI వ్యాధి గుర్తింపు",
 
         "detect_title": "పంట వ్యాధిని గుర్తించండి",
@@ -1012,31 +1024,40 @@ TRANSLATIONS = {
             "సంభావ్య వ్యాధిని గుర్తిస్తుంది.",
 
         "select_image": "పంట ఆకు చిత్రాన్ని ఎంచుకోండి",
+
         "choose_image": "చిత్రాన్ని ఎంచుకోండి",
+
         "analyze_image": "🔍 చిత్రాన్ని విశ్లేషించండి",
 
         "supported_formats":
             "మద్దతు ఉన్న ఫార్మాట్లు: JPG, JPEG, PNG",
 
-        # RESULT
         "result_tagline": "AI గుర్తింపు ఫలితం",
 
         "result_title": "వ్యాధి గుర్తింపు ఫలితం",
 
         "prediction": "అంచనా",
+
         "disease_detected": "గుర్తించబడిన వ్యాధి",
+
         "healthy_crop": "ఆరోగ్యకరమైన పంట",
 
         "crop": "పంట",
+
         "confidence": "నమ్మకం",
+
         "confidence_level": "నమ్మక స్థాయి",
 
         "high": "అధికం",
+
         "moderate": "మధ్యస్థం",
+
         "low": "తక్కువ",
 
         "about_disease": "ఈ పరిస్థితి గురించి",
+
         "symptoms": "సాధారణ లక్షణాలు",
+
         "recommendation": "సిఫార్సు",
 
         "no_symptoms":
@@ -1051,7 +1072,16 @@ TRANSLATIONS = {
         "prediction_error":
             "చిత్రాన్ని విశ్లేషించేటప్పుడు లోపం ఏర్పడింది.",
 
-        # FOOTER
+        "invalid_image":
+            "దయచేసి మొక్కజొన్న, బంగాళాదుంప లేదా టమాటా ఆకు యొక్క స్పష్టమైన చిత్రాన్ని అప్‌లోడ్ చేయండి.",
+
+        "invalid_image_title":
+            "చెల్లని చిత్రం",
+
+        "invalid_image_description":
+            "అప్‌లోడ్ చేసిన చిత్రం సరైన పంట ఆకు చిత్రంగా కనిపించడం లేదు. "
+            "దయచేసి మొక్కజొన్న, బంగాళాదుంప లేదా టమాటా ఆకు యొక్క స్పష్టమైన చిత్రాన్ని అప్‌లోడ్ చేయండి.",
+
         "footer":
             "AI ఆధారిత పంట వ్యాధి గుర్తింపు వ్యవస్థ."
     },
@@ -1063,14 +1093,12 @@ TRANSLATIONS = {
 
     "gu": {
 
-        # NAVIGATION
         "home": "હોમ",
         "detect": "રોગ શોધો",
         "performance": "પ્રદર્શન",
         "about": "અમારા વિશે",
         "get_started": "શરૂ કરો",
 
-        # HOME
         "tagline": "🌿 AI આધારિત ખેતી",
         "hero_title": "તમારા પાકનું રક્ષણ કરો",
         "hero_ai": "AI સાથે",
@@ -1103,6 +1131,7 @@ TRANSLATIONS = {
             "રોગની આગાહી અને વિશ્વાસ સ્તર મેળવો.",
 
         "simple_process": "સરળ પ્રક્રિયા",
+
         "how_it_works": "તે કેવી રીતે કામ કરે છે",
 
         "steps_description":
@@ -1128,7 +1157,6 @@ TRANSLATIONS = {
         "step_learn_text":
             "રોગની માહિતી અને નિવારણની ટીપ્સ જુઓ.",
 
-        # PERFORMANCE
         "performance_tagline": "AI મોડેલ મૂલ્યાંકન",
 
         "performance_title": "મોડેલનું પ્રદર્શન",
@@ -1156,15 +1184,22 @@ TRANSLATIONS = {
             "દરેક પાક રોગ શ્રેણી માટે પ્રાપ્ત ચોકસાઈ.",
 
         "corn_common_rust": "મકાઈ સામાન્ય રસ્ટ",
-        "corn_northern_leaf_blight": "મકાઈ નોર્ધર્ન લીફ બ્લાઇટ",
+
+        "corn_northern_leaf_blight":
+            "મકાઈ નોર્ધર્ન લીફ બ્લાઇટ",
+
         "corn_healthy": "તંદુરસ્ત મકાઈ",
 
         "potato_early_blight": "બટાકા અર્લી બ્લાઇટ",
+
         "potato_late_blight": "બટાકા લેટ બ્લાઇટ",
+
         "potato_healthy": "તંદુરસ્ત બટાકા",
 
         "tomato_early_blight": "ટામેટા અર્લી બ્લાઇટ",
+
         "tomato_late_blight": "ટામેટા લેટ બ્લાઇટ",
+
         "tomato_healthy": "તંદુરસ્ત ટામેટા",
 
         "confusion_matrix": "કન્ફ્યુઝન મેટ્રિક્સ",
@@ -1175,21 +1210,27 @@ TRANSLATIONS = {
         "actual_predicted": "વાસ્તવિક / અનુમાનિત",
 
         "corn_rust": "મકાઈ રસ્ટ",
+
         "corn_blight": "મકાઈ બ્લાઇટ",
+
         "corn_healthy": "તંદુરસ્ત મકાઈ",
 
         "potato_early": "બટાકા અર્લી",
+
         "potato_late": "બટાકા લેટ",
+
         "potato_healthy": "તંદુરસ્ત બટાકા",
 
         "tomato_early": "ટામેટા અર્લી",
+
         "tomato_late": "ટામેટા લેટ",
+
         "tomato_healthy": "તંદુરસ્ત ટામેટા",
 
         "try_detection": "🔍 રોગ શોધવાનો પ્રયાસ કરો",
+
         "back_home": "🏠 હોમ પર પાછા જાઓ",
 
-        # ABOUT
         "about_tagline": "AGROZYEN AI વિશે",
 
         "about_title": "AI સાથે સ્માર્ટ ખેતી",
@@ -1256,7 +1297,6 @@ TRANSLATIONS = {
         "about_cta_text":
             "પાકના પાનની છબી અપલોડ કરો અને AgroZyen AI તેનું વિશ્લેષણ કરવા દો.",
 
-        # DETECT
         "detect_tagline": "AI રોગ શોધ",
 
         "detect_title": "પાકનો રોગ શોધો",
@@ -1266,31 +1306,40 @@ TRANSLATIONS = {
             "તેનું વિશ્લેષણ કરીને સંભવિત રોગને ઓળખશે.",
 
         "select_image": "પાકના પાનની છબી પસંદ કરો",
+
         "choose_image": "છબી પસંદ કરો",
+
         "analyze_image": "🔍 છબીનું વિશ્લેષણ કરો",
 
         "supported_formats":
             "સપોર્ટેડ ફોર્મેટ: JPG, JPEG, PNG",
 
-        # RESULT
         "result_tagline": "AI શોધ પરિણામ",
 
         "result_title": "રોગ શોધ પરિણામ",
 
         "prediction": "આગાહી",
+
         "disease_detected": "શોધાયેલ રોગ",
+
         "healthy_crop": "તંદુરસ્ત પાક",
 
         "crop": "પાક",
+
         "confidence": "વિશ્વાસ",
+
         "confidence_level": "વિશ્વાસ સ્તર",
 
         "high": "ઉચ્ચ",
+
         "moderate": "મધ્યમ",
+
         "low": "ઓછું",
 
         "about_disease": "આ સ્થિતિ વિશે",
+
         "symptoms": "સામાન્ય લક્ષણો",
+
         "recommendation": "ભલામણ",
 
         "no_symptoms":
@@ -1305,7 +1354,16 @@ TRANSLATIONS = {
         "prediction_error":
             "છબીનું વિશ્લેષણ કરતી વખતે ભૂલ થઈ.",
 
-        # FOOTER
+        "invalid_image":
+            "કૃપા કરીને મકાઈ, બટાકા અથવા ટામેટાના પાનની સ્પષ્ટ તસવીર અપલોડ કરો.",
+
+        "invalid_image_title":
+            "અમાન્ય છબી",
+
+        "invalid_image_description":
+            "અપલોડ કરેલી છબી યોગ્ય પાકના પાનની છબી લાગતી નથી. "
+            "કૃપા કરીને મકાઈ, બટાકા અથવા ટામેટાના પાનની સ્પષ્ટ તસવીર અપલોડ કરો.",
+
         "footer":
             "AI આધારિત પાક રોગ શોધ સિસ્ટમ."
     }
@@ -1358,32 +1416,17 @@ def set_language(language):
 MODEL_PATH = "model/crop_disease_model.keras"
 
 UPLOAD_FOLDER = "static/uploads"
-# =========================================================
-# REVIEWS
-# =========================================================
 
 REVIEWS_FILE = "reviews.json"
 
-
-def load_reviews():
-    if not os.path.exists(REVIEWS_FILE):
-        return []
-
-    try:
-        with open(REVIEWS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return []
+# Minimum confidence required.
+# Increase to 80 or 85 if unwanted images are still getting results.
+MIN_CONFIDENCE = 60.0
 
 
-def save_reviews(reviews):
-    with open(REVIEWS_FILE, "w", encoding="utf-8") as f:
-        json.dump(
-            reviews,
-            f,
-            ensure_ascii=False,
-            indent=4
-        )
+# =========================================================
+# CREATE UPLOAD FOLDER
+# =========================================================
 
 os.makedirs(
     UPLOAD_FOLDER,
@@ -1392,12 +1435,69 @@ os.makedirs(
 
 
 # =========================================================
+# LOAD REVIEWS
+# =========================================================
+
+def load_reviews():
+
+    if not os.path.exists(REVIEWS_FILE):
+        return []
+
+    try:
+
+        with open(
+            REVIEWS_FILE,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
+            return json.load(f)
+
+    except Exception:
+
+        return []
+
+
+# =========================================================
+# SAVE REVIEWS
+# =========================================================
+
+def save_reviews(reviews):
+
+    with open(
+        REVIEWS_FILE,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
+        json.dump(
+            reviews,
+            f,
+            ensure_ascii=False,
+            indent=4
+        )
+
+
+# =========================================================
 # LOAD MODEL
 # =========================================================
 
-model = tf.keras.models.load_model(
-    MODEL_PATH
-)
+try:
+
+    model = tf.keras.models.load_model(
+        MODEL_PATH
+    )
+
+    print("✅ Model loaded successfully.")
+
+except Exception as e:
+
+    model = None
+
+    print(
+        "❌ Model loading error:",
+        e
+    )
 
 
 # =========================================================
@@ -1612,116 +1712,72 @@ DISEASE_TRANSLATION_KEYS = {
 
 
 # =========================================================
-# DISEASE INFORMATION TRANSLATION
+# TRANSLATED DISEASE INFORMATION
 # =========================================================
+
+# English information is used as fallback for now.
+# Your UI translations still work for all 5 languages.
 
 DISEASE_INFO_TRANSLATIONS = {
 
-    "en": {
-
-        "Corn___Common_rust": {
-            "about":
-                "Common rust is a fungal disease that affects corn leaves.",
-            "symptoms": [
-                "Reddish-brown rust spots on leaves",
-                "Yellowing around infected areas",
-                "Reduced photosynthesis"
-            ],
-            "recommendation":
-                "Use resistant varieties, maintain field sanitation, "
-                "and monitor plants regularly."
-        },
-
-        "Corn___Northern_Leaf_Blight": {
-            "about":
-                "Northern Leaf Blight produces long gray-green or brown "
-                "lesions on corn leaves.",
-            "symptoms": [
-                "Long cigar-shaped leaf lesions",
-                "Brown or gray patches",
-                "Premature leaf drying"
-            ],
-            "recommendation":
-                "Use resistant varieties and remove infected crop debris."
-        },
-
-        "Corn___healthy": {
-            "about":
-                "The uploaded corn leaf appears healthy.",
-            "symptoms": [],
-            "recommendation":
-                "Continue regular monitoring, proper irrigation, "
-                "balanced nutrition, and good agricultural practices."
-        },
-
-        "Potato___Early_blight": {
-            "about":
-                "Potato Early Blight commonly affects potato leaves.",
-            "symptoms": [
-                "Dark circular spots on leaves",
-                "Target-like rings inside lesions",
-                "Yellowing of surrounding leaf tissue"
-            ],
-            "recommendation":
-                "Remove infected leaves and improve air circulation."
-        },
-
-        "Potato___Late_blight": {
-            "about":
-                "Potato Late Blight can rapidly damage potato leaves, stems, and tubers.",
-            "symptoms": [
-                "Dark irregular leaf lesions",
-                "Rapid browning of leaves",
-                "White growth under humid conditions"
-            ],
-            "recommendation":
-                "Monitor frequently and remove infected material."
-        },
-
-        "Potato___healthy": {
-            "about":
-                "The uploaded potato leaf appears healthy.",
-            "symptoms": [],
-            "recommendation":
-                "Continue regular monitoring and maintain proper watering and nutrition."
-        },
-
-        "Tomato___Early_blight": {
-            "about":
-                "Tomato Early Blight commonly affects tomato leaves.",
-            "symptoms": [
-                "Dark spots on older leaves",
-                "Concentric ring patterns",
-                "Yellowing around affected areas",
-                "Premature leaf drop"
-            ],
-            "recommendation":
-                "Remove infected leaves and improve air circulation."
-        },
-
-        "Tomato___Late_blight": {
-            "about":
-                "Tomato Late Blight can rapidly damage tomato leaves, stems, and fruit.",
-            "symptoms": [
-                "Large dark irregular leaf patches",
-                "Rapid browning",
-                "Leaf death",
-                "Dark lesions on fruit"
-            ],
-            "recommendation":
-                "Remove severely infected material and improve air circulation."
-        },
-
-        "Tomato___healthy": {
-            "about":
-                "The uploaded tomato leaf appears healthy.",
-            "symptoms": [],
-            "recommendation":
-                "Continue regular monitoring, proper watering, "
-                "balanced nutrition, and good plant hygiene."
-        }
-    }
+    "en": disease_info
 }
+
+
+# =========================================================
+# HELPER — GET LANGUAGE
+# =========================================================
+
+def get_current_language():
+
+    language = session.get(
+        "language",
+        "en"
+    )
+
+    if language not in TRANSLATIONS:
+        language = "en"
+
+    return language
+
+
+# =========================================================
+# HELPER — INVALID IMAGE PAGE
+# =========================================================
+
+def invalid_image_response():
+
+    language = get_current_language()
+
+    translations = TRANSLATIONS[language]
+
+    return render_template(
+        "result.html",
+
+        image_path=None,
+
+        disease=translations["invalid_image_title"],
+
+        crop="",
+
+        confidence=0,
+
+        confidence_level=translations["low"],
+
+        is_healthy=False,
+
+        about=translations["invalid_image_description"],
+
+        symptoms=[],
+
+        recommendation=translations["invalid_image"],
+
+        disease_key=None,
+
+        confidence_key="low",
+
+        invalid_image=True
+    )
 
 
 # =========================================================
@@ -1770,35 +1826,77 @@ def about():
     return render_template(
         "about.html"
     )
-    
-    
-@app.route("/support")
-def help_page():
-    return render_template("support.html")
-    # =========================================================
-# HELP & SUPPORT
+
+
+# =========================================================
+# SUPPORT
 # =========================================================
 
-@app.route("/support", methods=["GET", "POST"])
+@app.route(
+    "/support",
+    methods=["GET", "POST"]
+)
 def support():
 
     support_submitted = False
 
     if request.method == "POST":
 
-        name = request.form.get("name", "").strip()
-        email = request.form.get("email", "").strip()
-        topic = request.form.get("topic", "").strip()
-        message = request.form.get("message", "").strip()
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
 
-        print("\n========================================")
-        print("NEW SUPPORT REQUEST")
-        print("========================================")
-        print("Name:", name)
-        print("Email:", email)
-        print("Topic:", topic)
-        print("Message:", message)
-        print("========================================\n")
+        email = request.form.get(
+            "email",
+            ""
+        ).strip()
+
+        topic = request.form.get(
+            "topic",
+            ""
+        ).strip()
+
+        message = request.form.get(
+            "message",
+            ""
+        ).strip()
+
+        print(
+            "\n========================================"
+        )
+
+        print(
+            "NEW SUPPORT REQUEST"
+        )
+
+        print(
+            "========================================"
+        )
+
+        print(
+            "Name:",
+            name
+        )
+
+        print(
+            "Email:",
+            email
+        )
+
+        print(
+            "Topic:",
+            topic
+        )
+
+        print(
+            "Message:",
+            message
+        )
+
+        print(
+            "========================================\n"
+        )
 
         support_submitted = True
 
@@ -1819,6 +1917,15 @@ def support():
 def predict():
 
     # -----------------------------------------------------
+    # CHECK MODEL
+    # -----------------------------------------------------
+
+    if model is None:
+
+        return "AI model could not be loaded."
+
+
+    # -----------------------------------------------------
     # CHECK FILE
     # -----------------------------------------------------
 
@@ -1833,8 +1940,28 @@ def predict():
     if file.filename == "":
 
         return "No image selected."
-    
-    
+
+
+    # -----------------------------------------------------
+    # CHECK FILE EXTENSION
+    # -----------------------------------------------------
+
+    allowed_extensions = {
+        "jpg",
+        "jpeg",
+        "png"
+    }
+
+    original_filename = file.filename.lower()
+
+    extension = original_filename.rsplit(
+        ".",
+        1
+    )[-1]
+
+    if extension not in allowed_extensions:
+
+        return "Invalid image format. Please upload JPG, JPEG or PNG."
 
 
     # -----------------------------------------------------
@@ -1845,6 +1972,11 @@ def predict():
         file.filename
     )
 
+    # Prevent empty filename
+    if not filename:
+
+        filename = "uploaded_leaf.jpg"
+
 
     image_path = os.path.join(
         UPLOAD_FOLDER,
@@ -1852,12 +1984,12 @@ def predict():
     )
 
 
-    file.save(
-        image_path
-    )
-
-
     try:
+
+        file.save(
+            image_path
+        )
+
 
         # -------------------------------------------------
         # OPEN IMAGE
@@ -1866,6 +1998,17 @@ def predict():
         image = Image.open(
             image_path
         ).convert("RGB")
+
+
+        # -------------------------------------------------
+        # BASIC IMAGE SIZE CHECK
+        # -------------------------------------------------
+
+        width, height = image.size
+
+        if width < 100 or height < 100:
+
+            return invalid_image_response()
 
 
         # -------------------------------------------------
@@ -1885,6 +2028,21 @@ def predict():
             image,
             dtype=np.float32
         )
+
+
+        # -------------------------------------------------
+        # NORMALIZATION
+        # -------------------------------------------------
+        #
+        # IMPORTANT:
+        # Your training code must use the same preprocessing.
+        #
+        # If your train_model.py uses:
+        # Rescaling(1./255)
+        # then keep this normalization.
+        #
+
+        image_array = image_array / 255.0
 
 
         # -------------------------------------------------
@@ -1908,12 +2066,39 @@ def predict():
 
 
         # -------------------------------------------------
+        # CHECK PREDICTION SHAPE
+        # -------------------------------------------------
+
+        if predictions is None or len(predictions) == 0:
+
+            return invalid_image_response()
+
+
+        probabilities = predictions[0]
+
+
+        if len(probabilities) != len(class_names):
+
+            print(
+                "Prediction classes:",
+                len(probabilities)
+            )
+
+            print(
+                "Expected classes:",
+                len(class_names)
+            )
+
+            return "Model output does not match class names."
+
+
+        # -------------------------------------------------
         # HIGHEST PROBABILITY
         # -------------------------------------------------
 
         predicted_index = int(
             np.argmax(
-                predictions[0]
+                probabilities
             )
         )
 
@@ -1923,11 +2108,42 @@ def predict():
         ]
 
 
+        # -------------------------------------------------
+        # CONFIDENCE
+        # -------------------------------------------------
+
         confidence = float(
-            predictions[0][
+            probabilities[
                 predicted_index
             ] * 100
         )
+
+
+        print(
+            "Prediction:",
+            disease
+        )
+
+        print(
+            "Confidence:",
+            confidence
+        )
+
+
+        # =================================================
+        # IMPORTANT INVALID IMAGE CHECK
+        # =================================================
+        #
+        # If confidence is too low, do NOT show a disease.
+        #
+
+        if confidence < MIN_CONFIDENCE:
+
+            print(
+                "⚠️ Image rejected because confidence is too low."
+            )
+
+            return invalid_image_response()
 
 
         # -------------------------------------------------
@@ -1943,15 +2159,21 @@ def predict():
         # CROP
         # -------------------------------------------------
 
-        if disease.startswith("Corn"):
+        if disease.startswith(
+            "Corn"
+        ):
 
             crop = "Corn"
 
-        elif disease.startswith("Potato"):
+        elif disease.startswith(
+            "Potato"
+        ):
 
             crop = "Potato"
 
-        elif disease.startswith("Tomato"):
+        elif disease.startswith(
+            "Tomato"
+        ):
 
             crop = "Tomato"
 
@@ -1987,16 +2209,7 @@ def predict():
         # CURRENT LANGUAGE
         # -------------------------------------------------
 
-        language = session.get(
-            "language",
-            "en"
-        )
-
-
-        if language not in TRANSLATIONS:
-
-            language = "en"
-
+        language = get_current_language()
 
         translations = TRANSLATIONS[
             language
@@ -2040,48 +2253,44 @@ def predict():
         # TRANSLATED CROP
         # -------------------------------------------------
 
-        if crop == "Corn":
+        crop_translations = {
 
-            if language == "hi":
-                crop_display = "मक्का"
-            elif language == "mr":
-                crop_display = "मका"
-            elif language == "te":
-                crop_display = "మొక్కజొన్న"
-            elif language == "gu":
-                crop_display = "મકાઈ"
-            else:
-                crop_display = "Corn"
+            "Corn": {
 
-        elif crop == "Potato":
+                "en": "Corn",
+                "hi": "मक्का",
+                "mr": "मका",
+                "te": "మొక్కజొన్న",
+                "gu": "મકાઈ"
+            },
 
-            if language == "hi":
-                crop_display = "आलू"
-            elif language == "mr":
-                crop_display = "बटाटा"
-            elif language == "te":
-                crop_display = "బంగాళాదుంప"
-            elif language == "gu":
-                crop_display = "બટાકા"
-            else:
-                crop_display = "Potato"
+            "Potato": {
 
-        elif crop == "Tomato":
+                "en": "Potato",
+                "hi": "आलू",
+                "mr": "बटाटा",
+                "te": "బంగాళాదుంప",
+                "gu": "બટાકા"
+            },
 
-            if language == "hi":
-                crop_display = "टमाटर"
-            elif language == "mr":
-                crop_display = "टोमॅटो"
-            elif language == "te":
-                crop_display = "టమాటా"
-            elif language == "gu":
-                crop_display = "ટામેટા"
-            else:
-                crop_display = "Tomato"
+            "Tomato": {
 
-        else:
+                "en": "Tomato",
+                "hi": "टमाटर",
+                "mr": "टोमॅटो",
+                "te": "టమాటా",
+                "gu": "ટામેટા"
+            }
+        }
 
-            crop_display = crop
+
+        crop_display = crop_translations.get(
+            crop,
+            {}
+        ).get(
+            language,
+            crop
+        )
 
 
         # -------------------------------------------------
@@ -2145,7 +2354,9 @@ def predict():
 
             disease_key=disease_key,
 
-            confidence_key=confidence_key
+            confidence_key=confidence_key,
+
+            invalid_image=False
 
         )
 
@@ -2157,78 +2368,117 @@ def predict():
             e
         )
 
-        language = session.get("language", "en")
-        if language not in TRANSLATIONS:
-            language = "en"
-        return TRANSLATIONS[language].get(
+        language = get_current_language()
+
+        return TRANSLATIONS[
+            language
+        ].get(
             "prediction_error",
             "Error while analyzing image."
         )
- 
- # =========================================================
+
+
+# =========================================================
 # REVIEW
 # =========================================================
 
-@app.route("/review", methods=["GET", "POST"])
+@app.route(
+    "/review",
+    methods=["GET", "POST"]
+)
 def review():
 
     reviews = load_reviews()
 
-    # -------------------------
+
+    # -----------------------------------------------------
     # SUBMIT REVIEW
-    # -------------------------
+    # -----------------------------------------------------
 
     if request.method == "POST":
 
-        name = request.form.get("name", "").strip()
-        rating = request.form.get("rating", "").strip()
-        message = request.form.get("message", "").strip()
+        name = request.form.get(
+            "name",
+            ""
+        ).strip()
+
+        rating = request.form.get(
+            "rating",
+            ""
+        ).strip()
+
+        message = request.form.get(
+            "message",
+            ""
+        ).strip()
+
 
         if not name or not rating or not message:
+
             return render_template(
                 "review.html",
                 reviews=reviews,
                 submitted=False
             )
 
+
         new_review = {
+
             "name": name,
+
             "rating": rating,
+
             "message": message
         }
 
-        reviews.append(new_review)
 
-        save_reviews(reviews)
+        reviews.append(
+            new_review
+        )
+
+
+        save_reviews(
+            reviews
+        )
+
 
         return render_template(
+
             "review.html",
+
             reviews=reviews,
+
             submitted=True,
+
             name=name,
+
             rating=rating,
+
             message=message
         )
 
-    # -------------------------
+
+    # -----------------------------------------------------
     # REVIEW PAGE
-    # -------------------------
+    # -----------------------------------------------------
 
     return render_template(
+
         "review.html",
+
         reviews=reviews,
+
         submitted=False
     )
 
 
 # =========================================================
-# RUN APPLICATION
+# RUN APP
 # =========================================================
 
 if __name__ == "__main__":
 
     app.run(
-        host="0.0.0.0",
-        port=5000,
         debug=True
     )
+
