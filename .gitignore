@@ -1,0 +1,8 @@
+venv/
+venv_old/
+*.pyc
+__pycache__/
+
+dataset/
+static/uploads/*
+!static/uploads/.gitkeep

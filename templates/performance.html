@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ t.performance_title }} | AgroZyen AI
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+
+    <!-- ==================================================
+         CONFUSION MATRIX CSS
+    ================================================== -->
+
+    <style>
+
+        .confusion-container {
+
+            width: 100%;
+
+            max-width: 100%;
+
+            overflow-x: auto;
+
+            overflow-y: hidden;
+
+            margin-top: 25px;
+
+            box-sizing: border-box;
+        }
+
+
+        .confusion-table {
+
+            width: 100%;
+
+            min-width: 900px;
+
+            border-collapse: collapse;
+
+            table-layout: fixed;
+        }
+
+
+        .confusion-table th,
+        .confusion-table td {
+
+            padding: 12px 8px;
+
+            text-align: center;
+
+            border: 1px solid #dfe7e1;
+
+            font-size: 13px;
+
+            word-break: break-word;
+        }
+
+
+        .confusion-table th {
+
+            font-weight: 700;
+        }
+
+
+        /* ==================================================
+           CONFUSION MATRIX IMAGE
+        ================================================== */
+
+        .confusion-image {
+
+            width: 100%;
+
+            max-width: 100%;
+
+            margin: 35px auto 0 auto;
+
+            padding: 20px;
+
+            box-sizing: border-box;
+
+            background: #ffffff;
+
+            border-radius: 16px;
+
+            border: 1px solid #dfe7e1;
+
+            overflow: hidden;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+        }
+
+
+        .confusion-image img {
+
+            display: block;
+
+            width: 100%;
+
+            max-width: 100%;
+
+            height: auto;
+
+            object-fit: contain;
+
+            box-sizing: border-box;
+        }
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 768px) {
+
+            .confusion-container {
+
+                overflow-x: auto;
+            }
+
+
+            .confusion-table {
+
+                min-width: 850px;
+            }
+
+
+            .confusion-image {
+
+                padding: 10px;
+
+                margin-top: 25px;
+            }
+
+
+            .confusion-image img {
+
+                width: 100%;
+
+                max-width: 100%;
+
+                height: auto;
+            }
+
+        }
+
+    </style>
+
+    <style>
+/* ===============================
+   RESPONSIVE 3-DOT MENU
+================================ */
+
+.mobile-menu-wrapper {
+    display: none;
+    position: relative;
+}
+
+.mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f7f2;
+    color: #2f7d4a;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 40px;
+    transition: 0.25s ease;
+}
+
+.mobile-menu-button:hover {
+    background: #dfeee2;
+    transform: scale(1.05);
+}
+
+.mobile-menu {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 230px;
+    padding: 10px;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid #dce7df;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 99999;
+    backdrop-filter: blur(12px);
+}
+
+.mobile-menu.show {
+    display: block;
+    animation: menuOpen 0.2s ease;
+}
+
+.mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    margin: 3px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #26352b;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.mobile-menu a:hover {
+    background: #edf7ef;
+    color: #2f7d4a;
+    transform: translateX(3px);
+}
+
+.mobile-menu a.active {
+    background: #e5f3e8;
+    color: #2f7d4a;
+}
+
+@keyframes menuOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ===============================
+   MOBILE NAVBAR
+================================ */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        position: relative;
+        padding: 12px 18px;
+    }
+
+    .navbar nav {
+        display: none !important;
+    }
+
+    .navbar > .nav-button {
+        display: none;
+    }
+
+    .mobile-menu-wrapper {
+        display: block;
+        margin-left: auto;
+    }
+
+}
+
+
+/* ===============================
+   VERY SMALL SCREEN
+================================ */
+
+@media (max-width: 500px) {
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .mobile-menu {
+        width: 210px;
+    }
+
+}
+</style>
+
+</head>
+
+
+<body class="performance-page-body">
+
+
+<!-- ==================================================
+     NAVIGATION
+================================================== -->
+
+<header class="navbar">
+
+
+    <!-- LOGO -->
+
+    <div class="logo">
+
+        🌱 AgroZyen <span>AI</span>
+
+    </div>
+
+
+    <!-- NAVIGATION LINKS -->
+
+    <nav>
+
+        <a href="/">
+
+            {{ t.home }}
+
+        </a>
+
+
+        <a href="/detect">
+
+            {{ t.detect }}
+
+        </a>
+
+
+        <a href="/performance"
+           class="active">
+
+            {{ t.performance }}
+
+        </a>
+
+
+        <a href="/about">
+
+            {{ t.about }}
+
+        </a>
+        <a href="/review">
+    Reviews
+</a>
+<a href="/support">
+    💬 Help & Support
+</a>
+
+
+        <!-- LANGUAGE SELECTOR -->
+
+        <div class="language-selector">
+
+            <span>🌐</span>
+
+
+            <select onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == "en" %}
+                        selected
+                    {% endif %}>
+
+                    English
+
+                </option>
+
+
+                <option value="hi"
+                    {% if current_language == "hi" %}
+                        selected
+                    {% endif %}>
+
+                    हिंदी
+
+                </option>
+
+
+                <option value="mr"
+                    {% if current_language == "mr" %}
+                        selected
+                    {% endif %}>
+
+                    मराठी
+
+                </option>
+
+
+                <option value="te"
+                    {% if current_language == "te" %}
+                        selected
+                    {% endif %}>
+
+                    తెలుగు
+
+                </option>
+
+
+                <option value="gu"
+                    {% if current_language == "gu" %}
+                        selected
+                    {% endif %}>
+
+                    ગુજરાતી
+
+                </option>
+
+            </select>
+
+        </div>
+
+    </nav>
+
+
+    <!-- GET STARTED -->
+
+    <a href="/detect"
+       class="nav-button">
+
+        {{ t.get_started }}
+
+    </a>
+    <!-- ===============================
+     MOBILE 3-DOT MENU
+================================ -->
+
+<div class="mobile-menu-wrapper">
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open menu"
+        aria-expanded="false">
+
+        ⋮
+
+    </button>
+
+
+    <div
+        class="mobile-menu"
+        id="mobileMenu">
+
+        <a href="/">
+            🏠 Home
+        </a>
+
+        <a href="/detect">
+            🔍 Detect Disease
+        </a>
+
+        <a href="/performance">
+            📊 Performance
+        </a>
+
+        <a href="/about">
+            ℹ️ About
+        </a>
+
+        <a href="/review">
+            ⭐ Reviews
+        </a>
+
+        <a href="/support">
+            🛟 Help & Support
+        </a>
+
+    </div>
+
+</div>
+
+   
+
+</header>
+
+
+<!-- ==================================================
+     PERFORMANCE PAGE
+================================================== -->
+
+<main class="performance-page">
+
+
+    <!-- ==================================================
+         HEADER
+    ================================================== -->
+
+    <div class="performance-header">
+
+
+        <p class="tagline">
+
+            {{ t.performance_tagline }}
+
+        </p>
+
+
+        <h1>
+
+            {{ t.performance_title }}
+
+        </h1>
+
+
+        <p>
+
+            {{ t.performance_description }}
+
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         SUMMARY CARDS
+    ================================================== -->
+
+    <div class="performance-cards">
+
+
+        <!-- VALIDATION ACCURACY -->
+
+        <div class="performance-card">
+
+
+            <div class="performance-icon">
+
+                🎯
+
+            </div>
+
+
+            <span>
+
+                {{ t.validation_accuracy }}
+
+            </span>
+
+
+            <strong>
+
+                94.85%
+
+            </strong>
+
+
+            <small>
+
+                {{ t.overall_accuracy }}
+
+            </small>
+
+        </div>
+
+
+        <!-- CORRECT PREDICTIONS -->
+
+        <div class="performance-card">
+
+
+            <div class="performance-icon">
+
+                ✅
+
+            </div>
+
+
+            <span>
+
+                {{ t.correct_predictions }}
+
+            </span>
+
+
+            <strong>
+
+                1897 / 2000
+
+            </strong>
+
+
+            <small>
+
+                {{ t.correct_predictions_text }}
+
+            </small>
+
+        </div>
+
+
+        <!-- TOTAL CLASSES -->
+
+        <div class="performance-card">
+
+
+            <div class="performance-icon">
+
+                🌿
+
+            </div>
+
+
+            <span>
+
+                {{ t.total_classes }}
+
+            </span>
+
+
+            <strong>
+
+                9
+
+            </strong>
+
+
+            <small>
+
+                {{ t.total_classes_text }}
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         PER CLASS ACCURACY
+    ================================================== -->
+
+    <section class="performance-section">
+
+
+        <h2>
+
+            {{ t.per_class_accuracy }}
+
+        </h2>
+
+
+        <p>
+
+            {{ t.per_class_description }}
+
+        </p>
+
+
+        <div class="accuracy-list">
+
+
+            <!-- CORN COMMON RUST -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.corn_common_rust }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    99.16%
+
+                </span>
+
+            </div>
+
+
+            <!-- CORN NORTHERN LEAF BLIGHT -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.corn_northern_leaf_blight }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    98.48%
+
+                </span>
+
+            </div>
+
+
+            <!-- CORN HEALTHY -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.corn_healthy }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    99.57%
+
+                </span>
+
+            </div>
+
+
+            <!-- POTATO EARLY BLIGHT -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.potato_early_blight }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    96.00%
+
+                </span>
+
+            </div>
+
+
+            <!-- POTATO LATE BLIGHT -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.potato_late_blight }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    88.00%
+
+                </span>
+
+            </div>
+
+
+            <!-- POTATO HEALTHY -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.potato_healthy }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    80.65%
+
+                </span>
+
+            </div>
+
+
+            <!-- TOMATO EARLY BLIGHT -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.tomato_early_blight }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    87.50%
+
+                </span>
+
+            </div>
+
+
+            <!-- TOMATO LATE BLIGHT -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.tomato_late_blight }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    91.10%
+
+                </span>
+
+            </div>
+
+
+            <!-- TOMATO HEALTHY -->
+
+            <div class="accuracy-row">
+
+                <div>
+
+                    <strong>
+
+                        {{ t.tomato_healthy }}
+
+                    </strong>
+
+                </div>
+
+                <span>
+
+                    100.00%
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CONFUSION MATRIX
+    ================================================== -->
+
+    <section class="performance-section">
+
+
+        <h2>
+
+            {{ t.confusion_matrix }}
+
+        </h2>
+
+
+        <p>
+
+            {{ t.confusion_description }}
+
+        </p>
+
+
+        <!-- TABLE -->
+
+        <div class="confusion-container">
+
+
+            <table class="confusion-table">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.actual_predicted }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.corn_rust }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.corn_blight }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.corn_healthy }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.potato_early }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.potato_late }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.potato_healthy }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.tomato_early }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.tomato_late }}
+
+                        </th>
+
+
+                        <th>
+
+                            {{ t.tomato_healthy }}
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    <!-- ROW 1 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.corn_rust }}
+
+                        </th>
+
+                        <td>237</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>2</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+                    <!-- ROW 2 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.corn_blight }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>194</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>1</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>2</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+                    <!-- ROW 3 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.corn_healthy }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>232</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>1</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+                    <!-- ROW 4 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.potato_early }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>192</td>
+
+                        <td>4</td>
+
+                        <td>0</td>
+
+                        <td>2</td>
+
+                        <td>2</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+                    <!-- ROW 5 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.potato_late }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>1</td>
+
+                        <td>176</td>
+
+                        <td>1</td>
+
+                        <td>8</td>
+
+                        <td>10</td>
+
+                        <td>4</td>
+
+                    </tr>
+
+
+                    <!-- ROW 6 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.potato_healthy }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>3</td>
+
+                        <td>25</td>
+
+                        <td>2</td>
+
+                        <td>1</td>
+
+                        <td>0</td>
+
+                    </tr>
+
+
+                    <!-- ROW 7 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.tomato_early }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>1</td>
+
+                        <td>4</td>
+
+                        <td>0</td>
+
+                        <td>175</td>
+
+                        <td>17</td>
+
+                        <td>3</td>
+
+                    </tr>
+
+
+                    <!-- ROW 8 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.tomato_late }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>1</td>
+
+                        <td>1</td>
+
+                        <td>1</td>
+
+                        <td>7</td>
+
+                        <td>1</td>
+
+                        <td>15</td>
+
+                        <td>348</td>
+
+                        <td>8</td>
+
+                    </tr>
+
+
+                    <!-- ROW 9 -->
+
+                    <tr>
+
+                        <th>
+
+                            {{ t.tomato_healthy }}
+
+                        </th>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>0</td>
+
+                        <td>318</td>
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ==================================================
+             CONFUSION MATRIX IMAGE
+        ================================================== -->
+
+        <div class="confusion-image">
+
+            <img
+                src="{{ url_for(
+                    'static',
+                    filename='images/confusion_matrix.png'
+                ) }}"
+                alt="{{ t.confusion_matrix }}"
+            >
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         ACTION BUTTONS
+    ================================================== -->
+
+    <div class="performance-actions">
+
+
+        <a
+            href="/detect"
+            class="analyze-button">
+
+            {{ t.try_detection }}
+
+        </a>
+
+
+        <a
+            href="/"
+            class="secondary-button">
+
+            {{ t.back_home }}
+
+        </a>
+
+    </div>
+
+
+</main>
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<footer>
+
+
+    <div class="logo">
+
+        🌱 AgroZyen <span>AI</span>
+
+    </div>
+
+
+    <p>
+
+        {{ t.footer }}
+
+    </p>
+
+
+    <p class="copyright">
+
+        © 2026 AgroZyen AI | Developed by DHRUV
+
+    </p>
+
+
+</footer>
+
+
+<!-- ==================================================
+     LANGUAGE SCRIPT
+================================================== -->
+
+<script>
+
+    function changeLanguage(language) {
+
+        if (!language) {
+
+            return;
+
+        }
+
+        window.location.href =
+            "/set-language/" + language;
+
+    }
+
+</script>
+<script>
+
+/* =========================================
+   MOBILE 3-DOT MENU
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuButton =
+        document.getElementById("mobileMenuButton");
+
+    const menu =
+        document.getElementById("mobileMenu");
+
+
+    if (!menuButton || !menu) {
+        return;
+    }
+
+
+    menuButton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const isOpen =
+            menu.classList.toggle("show");
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+    });
+
+
+    /* Close when clicking outside */
+
+    document.addEventListener("click", function (event) {
+
+        if (
+            !menu.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+    });
+
+
+    /* Close after selecting a link */
+
+    menu.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</body>
+
+</html>

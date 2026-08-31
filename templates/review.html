@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Review | AgroZyen AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        .review-page {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 70px 20px;
+        }
+
+        .review-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .review-header .tagline {
+            color: #4f8f4f;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .review-header h1 {
+            font-size: 42px;
+            margin: 10px 0;
+        }
+
+        .review-header p {
+            color: #666;
+            font-size: 17px;
+        }
+
+        .review-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8e2;
+        }
+
+        .review-group {
+            margin-bottom: 22px;
+        }
+
+        .review-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .review-group input,
+        .review-group textarea,
+        .review-group select {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #d5ddd7;
+            border-radius: 10px;
+            font-size: 15px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .review-group textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .review-submit {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            background: #4f8f4f;
+            color: white;
+        }
+
+        .review-submit:hover {
+            opacity: 0.9;
+        }
+
+        .review-success {
+            text-align: center;
+            padding: 25px;
+            background: #edf8ed;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .review-success h2 {
+            margin-top: 0;
+        }
+
+        .submitted-review {
+            margin-top: 25px;
+            padding: 25px;
+            background: #f7faf7;
+            border-radius: 15px;
+        }
+
+        .submitted-review p {
+            margin: 10px 0;
+        }
+
+        .review-actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .review-actions a {
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+
+            .review-page {
+                padding: 40px 15px;
+            }
+
+            .review-header h1 {
+                font-size: 32px;
+            }
+
+            .review-card {
+                padding: 22px;
+            }
+
+        }
+        .all-reviews {
+    margin-top: 60px;
+}
+
+.all-reviews .review-header {
+    margin-bottom: 30px;
+}
+
+.all-reviews .review-header h2 {
+    font-size: 34px;
+    margin: 10px 0;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.user-review-card {
+    background: #ffffff;
+    border: 1px solid #e1e8e2;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.user-review-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.user-review-top h3 {
+    margin: 0 0 8px;
+}
+
+.review-stars {
+    font-size: 18px;
+}
+
+.review-rating {
+    font-weight: 700;
+    color: #4f8f4f;
+}
+
+.user-review-message {
+    margin-top: 18px;
+    line-height: 1.7;
+    color: #555;
+}
+
+.no-reviews {
+    text-align: center;
+    background: #f7faf7;
+    border-radius: 16px;
+    padding: 35px;
+    border: 1px solid #e1e8e2;
+}
+
+    </style>
+
+    <style>
+/* ===============================
+   RESPONSIVE 3-DOT MENU
+================================ */
+
+.mobile-menu-wrapper {
+    display: none;
+    position: relative;
+}
+
+.mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f7f2;
+    color: #2f7d4a;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 40px;
+    transition: 0.25s ease;
+}
+
+.mobile-menu-button:hover {
+    background: #dfeee2;
+    transform: scale(1.05);
+}
+
+.mobile-menu {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 230px;
+    padding: 10px;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid #dce7df;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 99999;
+    backdrop-filter: blur(12px);
+}
+
+.mobile-menu.show {
+    display: block;
+    animation: menuOpen 0.2s ease;
+}
+
+.mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    margin: 3px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #26352b;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.mobile-menu a:hover {
+    background: #edf7ef;
+    color: #2f7d4a;
+    transform: translateX(3px);
+}
+
+.mobile-menu a.active {
+    background: #e5f3e8;
+    color: #2f7d4a;
+}
+
+@keyframes menuOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ===============================
+   MOBILE NAVBAR
+================================ */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        position: relative;
+        padding: 12px 18px;
+    }
+
+    .navbar nav {
+        display: none !important;
+    }
+
+    .navbar > .nav-button {
+        display: none;
+    }
+
+    .mobile-menu-wrapper {
+        display: block;
+        margin-left: auto;
+    }
+
+}
+
+
+/* ===============================
+   VERY SMALL SCREEN
+================================ */
+
+@media (max-width: 500px) {
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .mobile-menu {
+        width: 210px;
+    }
+
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+
+    <nav>
+
+        <a href="/">
+            {{ t.home }}
+        </a>
+
+        <a href="/detect">
+            {{ t.detect }}
+        </a>
+
+        <a href="/performance">
+            {{ t.performance }}
+        </a>
+
+        <a href="/about">
+            {{ t.about }}
+        </a>
+
+        <a href="/review" class="active">
+            Review
+        </a>
+
+         <!-- LANGUAGE -->
+
+        <div class="language-selector">
+
+            <span>🌐</span>
+
+            <select onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == "en" %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="hi"
+                    {% if current_language == "hi" %}selected{% endif %}>
+                    हिंदी
+                </option>
+
+                <option value="mr"
+                    {% if current_language == "mr" %}selected{% endif %}>
+                    मराठी
+                </option>
+
+                <option value="te"
+                    {% if current_language == "te" %}selected{% endif %}>
+                    తెలుగు
+                </option>
+
+                <option value="gu"
+                    {% if current_language == "gu" %}selected{% endif %}>
+                    ગુજરાતી
+                </option>
+
+            </select>
+
+        </div>
+
+    
+
+    </nav>
+
+
+    <a href="/detect" class="nav-button">
+        {{ t.get_started }}
+    </a>
+    <!-- ===============================
+     MOBILE 3-DOT MENU
+================================ -->
+
+<div class="mobile-menu-wrapper">
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open menu"
+        aria-expanded="false">
+
+        ⋮
+
+    </button>
+
+
+    <div
+        class="mobile-menu"
+        id="mobileMenu">
+
+        <a href="/">
+            🏠 Home
+        </a>
+
+        <a href="/detect">
+            🔍 Detect Disease
+        </a>
+
+        <a href="/performance">
+            📊 Performance
+        </a>
+
+        <a href="/about">
+            ℹ️ About
+        </a>
+
+        <a href="/review">
+            ⭐ Reviews
+        </a>
+
+        <a href="/support">
+            🛟 Help & Support
+        </a>
+
+    </div>
+
+</div>
+
+   
+
+</header>
+
+
+
+<!-- =====================================================
+     REVIEW PAGE
+===================================================== -->
+
+<main class="review-page">
+
+
+    <div class="review-header">
+
+        <p class="tagline">
+            USER FEEDBACK
+        </p>
+
+        <h1>
+            Share Your Review
+        </h1>
+
+        <p>
+            Tell us about your experience with AgroZyen AI.
+        </p>
+
+    </div>
+
+
+
+    <div class="review-card">
+        <!-- =====================================================
+     ALL REVIEWS
+===================================================== -->
+
+<section class="all-reviews">
+
+    <div class="review-header">
+
+        <p class="tagline">
+            COMMUNITY FEEDBACK
+        </p>
+
+        <h2>
+            User Reviews
+        </h2>
+
+        <p>
+            See what users think about AgroZyen AI.
+        </p>
+
+    </div>
+
+
+    {% if reviews %}
+
+        <div class="reviews-list">
+
+            {% for review in reviews %}
+
+                <div class="user-review-card">
+
+                    <div class="user-review-top">
+
+                        <div>
+
+                            <h3>
+                                {{ review.name }}
+                            </h3>
+
+                            <div class="review-stars">
+
+                                {% if review.rating == "5" %}
+                                    ⭐⭐⭐⭐⭐
+                                {% elif review.rating == "4" %}
+                                    ⭐⭐⭐⭐
+                                {% elif review.rating == "3" %}
+                                    ⭐⭐⭐
+                                {% elif review.rating == "2" %}
+                                    ⭐⭐
+                                {% else %}
+                                    ⭐
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <span class="review-rating">
+                            {{ review.rating }}/5
+                        </span>
+
+                    </div>
+
+
+                    <p class="user-review-message">
+                        "{{ review.message }}"
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="no-reviews">
+
+            <h3>
+                No reviews yet
+            </h3>
+
+            <p>
+                Be the first person to share your experience!
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+        {% if submitted %}
+
+            <div class="review-success">
+
+                <h2>
+                    ✅ Thank You!
+                </h2>
+
+                <p>
+                    Your review has been submitted successfully.
+                </p>
+
+            </div>
+
+
+            <div class="submitted-review">
+
+                <h3>
+                    Your Review
+                </h3>
+
+                <p>
+                    <strong>Name:</strong>
+                    {{ name }}
+                </p>
+
+                <p>
+                    <strong>Rating:</strong>
+                    {{ rating }}/5
+                </p>
+
+                <p>
+                    <strong>Review:</strong>
+                    {{ message }}
+                </p>
+
+            </div>
+
+
+            <div class="review-actions">
+
+                <a
+                    href="{{ url_for('review') }}"
+                    class="analyze-button">
+
+                    ✍️ Write Another Review
+
+                </a>
+
+
+                <a
+                   href="{{ url_for('home') }}"
+                    class="secondary-button">
+
+                    🏠 Back to Home
+
+                </a>
+
+            </div>
+
+
+        {% else %}
+
+
+            <!-- REVIEW FORM -->
+
+            <form
+                action="/review"
+                method="POST">
+
+
+                <div class="review-group">
+
+                    <label for="name">
+                        Your Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                        required>
+
+                </div>
+
+
+
+                <div class="review-group">
+
+                    <label for="rating">
+                        Rating
+                    </label>
+
+                    <select
+                        id="rating"
+                        name="rating"
+                        required>
+
+                        <option value="">
+                            Select Rating
+                        </option>
+
+                        <option value="5">
+                            ⭐⭐⭐⭐⭐ 5 - Excellent
+                        </option>
+
+                        <option value="4">
+                            ⭐⭐⭐⭐ 4 - Very Good
+                        </option>
+
+                        <option value="3">
+                            ⭐⭐⭐ 3 - Good
+                        </option>
+
+                        <option value="2">
+                            ⭐⭐ 2 - Average
+                        </option>
+
+                        <option value="1">
+                            ⭐ 1 - Poor
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="review-group">
+
+                    <label for="message">
+                        Your Review
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        placeholder="Write your experience here..."
+                        required></textarea>
+
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="review-submit">
+
+                    ⭐ Submit Review
+
+                </button>
+
+
+            </form>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+    <p>
+        {{ t.footer }}
+    </p>
+
+    <p class="copyright">
+        © 2026 AgroZyen AI | Developed by DHRUV
+    </p>
+
+</footer>
+
+<script>
+
+/* =========================================
+   MOBILE 3-DOT MENU
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuButton =
+        document.getElementById("mobileMenuButton");
+
+    const menu =
+        document.getElementById("mobileMenu");
+
+
+    if (!menuButton || !menu) {
+        return;
+    }
+
+
+    menuButton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const isOpen =
+            menu.classList.toggle("show");
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+    });
+
+
+    /* Close when clicking outside */
+
+    document.addEventListener("click", function (event) {
+
+        if (
+            !menu.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+    });
+
+
+    /* Close after selecting a link */
+
+    menu.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+</body>
+
+</html>

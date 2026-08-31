@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AgroZyen AI | Crop Disease Detection</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+          <style>
+/* ===============================
+   RESPONSIVE 3-DOT MENU
+================================ */
+
+.mobile-menu-wrapper {
+    display: none;
+    position: relative;
+}
+
+.mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f7f2;
+    color: #2f7d4a;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 40px;
+    transition: 0.25s ease;
+}
+
+.mobile-menu-button:hover {
+    background: #dfeee2;
+    transform: scale(1.05);
+}
+
+.mobile-menu {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 230px;
+    padding: 10px;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid #dce7df;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 99999;
+    backdrop-filter: blur(12px);
+}
+
+.mobile-menu.show {
+    display: block;
+    animation: menuOpen 0.2s ease;
+}
+
+.mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    margin: 3px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #26352b;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.mobile-menu a:hover {
+    background: #edf7ef;
+    color: #2f7d4a;
+    transform: translateX(3px);
+}
+
+.mobile-menu a.active {
+    background: #e5f3e8;
+    color: #2f7d4a;
+}
+
+@keyframes menuOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ===============================
+   MOBILE NAVBAR
+================================ */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        position: relative;
+        padding: 12px 18px;
+    }
+
+    .navbar nav {
+        display: none !important;
+    }
+
+    .navbar > .nav-button {
+        display: none;
+    }
+
+    .mobile-menu-wrapper {
+        display: block;
+        margin-left: auto;
+    }
+
+}
+
+
+/* ===============================
+   VERY SMALL SCREEN
+================================ */
+
+@media (max-width: 500px) {
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .mobile-menu {
+        width: 210px;
+    }
+
+}
+</style>
+
+</head>
+
+
+<body class="home-page">
+
+
+<header class="navbar">
+
+    <!-- LOGO -->
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+
+    <!-- NAVIGATION -->
+
+    <nav>
+
+        <a href="/" class="active">
+            {{ t.home }}
+        </a>
+
+        <a href="/detect">
+            {{ t.detect }}
+        </a>
+
+        <a href="/performance">
+            {{ t.performance }}
+        </a>
+
+        <a href="/about">
+            {{ t.about }}
+        </a>
+        <a href="/review">
+    Reviews
+</a>
+<a href="/support">
+    💬 Help & Support
+</a>
+
+
+        <!-- LANGUAGE -->
+
+        <div class="language-selector">
+
+            <span>🌐</span>
+
+            <select onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == "en" %}selected{% endif %}>
+                    English
+                </option>
+
+                <option value="hi"
+                    {% if current_language == "hi" %}selected{% endif %}>
+                    हिंदी
+                </option>
+
+                <option value="mr"
+                    {% if current_language == "mr" %}selected{% endif %}>
+                    मराठी
+                </option>
+
+                <option value="te"
+                    {% if current_language == "te" %}selected{% endif %}>
+                    తెలుగు
+                </option>
+
+                <option value="gu"
+                    {% if current_language == "gu" %}selected{% endif %}>
+                    ગુજરાતી
+                </option>
+
+            </select>
+
+        </div>
+
+    </nav>
+
+
+    <!-- GET STARTED -->
+
+    <a href="/detect" class="nav-button">
+        {{ t.get_started }}
+    </a>
+    
+    <!-- ===============================
+     MOBILE 3-DOT MENU
+================================ -->
+
+<div class="mobile-menu-wrapper">
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open menu"
+        aria-expanded="false">
+
+        ⋮
+
+    </button>
+
+
+    <div
+        class="mobile-menu"
+        id="mobileMenu">
+
+        <a href="/">
+            🏠 Home
+        </a>
+
+        <a href="/detect">
+            🔍 Detect Disease
+        </a>
+
+        <a href="/performance">
+            📊 Performance
+        </a>
+
+        <a href="/about">
+            ℹ️ About
+        </a>
+
+        <a href="/review">
+            ⭐ Reviews
+        </a>
+
+        <a href="/support">
+            🛟 Help & Support
+        </a>
+
+    </div>
+
+</div>
+
+   
+
+</header>
+
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <p class="tagline">
+            {{ t.tagline }}
+        </p>
+
+        <h1>
+
+            {{ t.hero_title }}
+
+            <span>
+                {{ t.hero_ai }}
+            </span>
+
+        </h1>
+
+        <p class="description">
+            {{ t.description }}
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a href="/detect"
+               class="primary-button">
+
+                {{ t.detect_button }}
+
+            </a>
+
+
+            <a href="#how-it-works"
+               class="secondary-button">
+
+                {{ t.how_button }}
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- AI CARD -->
+
+    <div class="hero-image">
+
+        <div class="image-card">
+
+            <div class="leaf-icon">
+                🌿
+            </div>
+
+            <h3>
+                {{ t.ai_detection }}
+            </h3>
+
+            <p>
+                {{ t.ai_description }}
+            </p>
+
+            <div class="scan-line"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- FEATURES -->
+
+<section class="features">
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            📷
+        </div>
+
+        <h3>
+            {{ t.upload }}
+        </h3>
+
+        <p>
+            {{ t.upload_text }}
+        </p>
+
+    </div>
+
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🤖
+        </div>
+
+        <h3>
+            {{ t.analysis }}
+        </h3>
+
+        <p>
+            {{ t.analysis_text }}
+        </p>
+
+    </div>
+
+
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            📊
+        </div>
+
+        <h3>
+            {{ t.results }}
+        </h3>
+
+        <p>
+            {{ t.results_text }}
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- HOW IT WORKS -->
+
+<section class="how-it-works"
+         id="how-it-works">
+
+
+    <p class="section-tag">
+        {{ t.simple_process }}
+    </p>
+
+
+    <h2>
+        {{ t.how_it_works }}
+    </h2>
+
+
+    <p class="section-description">
+        {{ t.steps_description }}
+    </p>
+
+
+
+    <div class="steps">
+
+
+        <div class="step">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <h3>
+                {{ t.step_upload }}
+            </h3>
+
+            <p>
+                {{ t.step_upload_text }}
+            </p>
+
+        </div>
+
+
+
+        <div class="step">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <h3>
+                {{ t.step_analyze }}
+            </h3>
+
+            <p>
+                {{ t.step_analyze_text }}
+            </p>
+
+        </div>
+
+
+
+        <div class="step">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <h3>
+                {{ t.step_detect }}
+            </h3>
+
+            <p>
+                {{ t.step_detect_text }}
+            </p>
+
+        </div>
+
+
+
+        <div class="step">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <h3>
+                {{ t.step_learn }}
+            </h3>
+
+            <p>
+                {{ t.step_learn_text }}
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+    <p>
+        {{ t.footer }}
+    </p>
+
+    <p class="copyright">
+        © 2026 AgroZyen AI | Developed by DHRUV
+    </p>
+
+</footer>
+
+
+
+<script>
+
+function changeLanguage(language) {
+
+    if (!language) {
+        return;
+    }
+
+    window.location.href =
+        "/set-language/" + language;
+
+}
+
+</script>
+<script>
+
+/* =========================================
+   MOBILE 3-DOT MENU
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuButton =
+        document.getElementById("mobileMenuButton");
+
+    const menu =
+        document.getElementById("mobileMenu");
+
+
+    if (!menuButton || !menu) {
+        return;
+    }
+
+
+    menuButton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const isOpen =
+            menu.classList.toggle("show");
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+    });
+
+
+    /* Close when clicking outside */
+
+    document.addEventListener("click", function (event) {
+
+        if (
+            !menu.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+    });
+
+
+    /* Close after selecting a link */
+
+    menu.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+
+</body>
+</html>

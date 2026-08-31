@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Help & Support | AgroZyen AI
+    </title>
+
+
+    <!-- =====================================================
+         MAIN WEBSITE CSS
+    ====================================================== -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+
+
+    <!-- =====================================================
+         HELP PAGE CSS
+    ====================================================== -->
+
+    <style>
+
+        /* =================================================
+           RESET
+        ================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #17351f;
+            background: #f4faf5;
+            overflow-x: hidden;
+        }
+
+
+        /* =================================================
+           BACKGROUND
+        ================================================= */
+
+        .help-background {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: -5;
+            background:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(82, 180, 103, 0.20),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 10%,
+                    rgba(34, 139, 72, 0.16),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 50% 90%,
+                    rgba(119, 196, 135, 0.15),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8fff9,
+                    #eef8f0,
+                    #f7fcf8
+                );
+        }
+
+
+        .background-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0.35;
+            animation: floatOrb 10s ease-in-out infinite;
+        }
+
+
+        .orb-one {
+            width: 260px;
+            height: 260px;
+            background: #b8e8c1;
+            top: 15%;
+            left: -80px;
+        }
+
+
+        .orb-two {
+            width: 330px;
+            height: 330px;
+            background: #8ed39d;
+            right: -120px;
+            top: 45%;
+            animation-delay: 2s;
+        }
+
+
+        .orb-three {
+            width: 190px;
+            height: 190px;
+            background: #c7efd0;
+            left: 45%;
+            bottom: -80px;
+            animation-delay: 4s;
+        }
+
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-25px) scale(1.05);
+            }
+        }
+
+
+
+        /* =================================================
+           NAVBAR
+        ================================================= */
+
+        .help-navbar {
+            width: 100%;
+            padding: 18px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border-bottom: 1px solid rgba(70, 120, 80, 0.12);
+
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+
+        .help-logo {
+            font-size: 22px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+
+        .help-logo span {
+            color: #4f9a5a;
+        }
+
+
+        .help-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+
+        .help-nav a {
+            text-decoration: none;
+            color: #294b31;
+            font-weight: 600;
+            transition: 0.25s;
+        }
+
+
+        .help-nav a:hover {
+            color: #3e914d;
+        }
+
+
+        .help-nav a.active {
+            color: #3e914d;
+        }
+
+
+        .help-start {
+            text-decoration: none;
+            background: #4f8f4f;
+            color: white;
+            padding: 11px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+
+        .help-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(55, 120, 65, 0.25);
+        }
+
+
+
+        /* =================================================
+           THREE DOT MENU
+        ================================================= */
+
+        .menu-wrapper {
+            position: relative;
+            display: none;
+        }
+
+
+        .menu-button {
+            width: 44px;
+            height: 44px;
+            border: 1px solid #dce9de;
+            border-radius: 12px;
+            background: white;
+            font-size: 25px;
+            cursor: pointer;
+            color: #315b39;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+        }
+
+
+        .menu-button:hover {
+            background: #eef8f0;
+        }
+
+
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 55px;
+            width: 230px;
+
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(15px);
+
+            border: 1px solid #dce9de;
+            border-radius: 16px;
+
+            padding: 10px;
+
+            box-shadow:
+                0 20px 50px rgba(31, 75, 40, 0.16);
+
+            display: none;
+        }
+
+
+        .dropdown-menu.show {
+            display: block;
+            animation: menuShow 0.2s ease;
+        }
+
+
+        @keyframes menuShow {
+
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 14px;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #254c2e;
+            font-weight: 600;
+        }
+
+
+        .dropdown-menu a:hover {
+            background: #edf7ef;
+        }
+
+
+
+        /* =================================================
+           HERO
+        ================================================= */
+
+        .help-page {
+            width: min(1150px, 92%);
+            margin: auto;
+            padding: 75px 0 90px;
+        }
+
+
+        .help-hero {
+            text-align: center;
+            max-width: 800px;
+            margin: auto;
+        }
+
+
+        .help-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: rgba(79, 143, 79, 0.10);
+            color: #43834b;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+
+        .help-hero h1 {
+            font-size: clamp(38px, 6vw, 65px);
+            line-height: 1.05;
+            margin: 20px 0 18px;
+        }
+
+
+        .help-hero h1 span {
+            color: #4f9857;
+        }
+
+
+        .help-hero p {
+            color: #607066;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+
+
+        /* =================================================
+           SEARCH
+        ================================================= */
+
+        .help-search {
+            max-width: 650px;
+            margin: 0 auto 60px;
+            position: relative;
+        }
+
+
+        .help-search input {
+            width: 100%;
+            padding: 18px 22px 18px 52px;
+            border: 1px solid #d6e5d9;
+            border-radius: 16px;
+            outline: none;
+
+            background: rgba(255, 255, 255, 0.88);
+
+            font-size: 16px;
+
+            box-shadow:
+                0 15px 40px rgba(43, 95, 53, 0.08);
+        }
+
+
+        .help-search input:focus {
+            border-color: #67a86d;
+            box-shadow:
+                0 0 0 4px rgba(79, 143, 79, 0.10);
+        }
+
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+        }
+
+
+
+        /* =================================================
+           SUPPORT CARDS
+        ================================================= */
+
+        .support-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 22px;
+            margin-bottom: 80px;
+        }
+
+
+        .support-card {
+            position: relative;
+            padding: 30px;
+            border-radius: 22px;
+
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(15px);
+
+            border: 1px solid rgba(100, 150, 110, 0.16);
+
+            box-shadow:
+                0 18px 45px rgba(37, 89, 46, 0.08);
+
+            transition:
+                transform 0.3s,
+                box-shadow 0.3s;
+        }
+
+
+        .support-card:hover {
+            transform: translateY(-8px);
+            box-shadow:
+                0 25px 55px rgba(37, 89, 46, 0.14);
+        }
+
+
+        .support-icon {
+            width: 58px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 16px;
+            background: #edf8ef;
+
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+
+        .support-card h3 {
+            margin: 0 0 10px;
+            font-size: 21px;
+        }
+
+
+        .support-card p {
+            color: #69756d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+
+        .support-link {
+            color: #448a4e;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+
+
+        /* =================================================
+           FAQ
+        ================================================= */
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+
+        .section-heading .small {
+            color: #4f9257;
+            font-weight: 800;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+
+        .section-heading h2 {
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+
+        .section-heading p {
+            color: #68756c;
+        }
+
+
+        .faq-container {
+            max-width: 850px;
+            margin: 0 auto 80px;
+        }
+
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid #dfeae1;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+
+        .faq-question {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 20px;
+            text-align: left;
+            font-size: 16px;
+            font-weight: 700;
+            color: #244b2d;
+            cursor: pointer;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+
+        .faq-question span:last-child {
+            font-size: 22px;
+            transition: transform 0.25s;
+        }
+
+
+        .faq-item.open
+        .faq-question span:last-child {
+            transform: rotate(45deg);
+        }
+
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+
+        .faq-answer p {
+            padding: 0 20px 20px;
+            margin: 0;
+            color: #66726a;
+            line-height: 1.7;
+        }
+
+
+
+        /* =================================================
+           CONTACT SUPPORT
+        ================================================= */
+
+        .contact-section {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 30px;
+            align-items: stretch;
+        }
+
+
+        .contact-info,
+        .contact-form {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(15px);
+            border: 1px solid #dce8de;
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow:
+                0 20px 50px rgba(36, 86, 44, 0.08);
+        }
+
+
+        .contact-info h2,
+        .contact-form h2 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+
+        .contact-info p {
+            color: #68756c;
+            line-height: 1.7;
+        }
+
+
+        .contact-detail {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            margin-top: 25px;
+        }
+
+
+        .contact-detail-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #edf7ef;
+            border-radius: 12px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+
+        .contact-detail strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        .contact-detail span {
+            color: #6b776f;
+            font-size: 14px;
+        }
+
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d4e2d6;
+            border-radius: 10px;
+            font: inherit;
+            outline: none;
+            background: white;
+        }
+
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #62a56a;
+            box-shadow:
+                0 0 0 3px rgba(79, 143, 79, 0.10);
+        }
+
+
+        .send-button {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 11px;
+            background: #4f8f4f;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 25px rgba(62, 125, 69, 0.22);
+        }
+
+
+        .form-success {
+            display: none;
+            padding: 15px;
+            margin-top: 15px;
+            background: #edf8ef;
+            border-radius: 10px;
+            color: #34713d;
+            font-weight: 600;
+        }
+
+
+
+        /* =================================================
+           FOOTER
+        ================================================= */
+
+        .help-footer {
+            margin-top: 70px;
+            padding: 35px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.75);
+            border-top: 1px solid #dce8de;
+        }
+
+
+        .help-footer .logo {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+
+        .help-footer .logo span {
+            color: #4f9857;
+        }
+
+
+        .help-footer p {
+            color: #68756c;
+        }
+
+
+        .copyright {
+            font-size: 13px;
+        }
+
+
+
+        /* =================================================
+           NO FAQ RESULT
+        ================================================= */
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            color: #68756c;
+        }
+
+
+
+        /* =================================================
+           RESPONSIVE
+        ================================================= */
+
+        @media (max-width: 900px) {
+
+            .help-nav {
+                display: none;
+            }
+
+            .menu-wrapper {
+                display: block;
+            }
+
+            .help-start {
+                display: none;
+            }
+
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-section {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .help-navbar {
+                padding: 15px 4%;
+            }
+
+            .help-page {
+                width: 92%;
+                padding-top: 50px;
+            }
+
+            .help-hero p {
+                font-size: 16px;
+            }
+
+            .support-card,
+            .contact-info,
+            .contact-form {
+                padding: 24px;
+            }
+
+            .section-heading h2 {
+                font-size: 30px;
+            }
+
+        }
+        <style>
+
+/* ================= FAQ ================= */
+
+.faq-section {
+    max-width: 950px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-heading span {
+    display: inline-block;
+    color: #4f8f4f;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.section-heading h2 {
+    font-size: 38px;
+    margin: 5px 0 12px;
+}
+
+.section-heading p {
+    color: #666;
+    font-size: 16px;
+}
+
+.faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.faq-item {
+    background: rgba(255,255,255,0.95);
+    border: 1px solid #dfe8df;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+    transition: 0.3s ease;
+}
+
+.faq-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.09);
+}
+
+.faq-question {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #222;
+}
+
+.faq-icon {
+    font-size: 25px;
+    font-weight: 400;
+    transition: transform 0.3s ease;
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+}
+
+.faq-answer p {
+    margin: 0;
+    padding: 0 22px 20px;
+    color: #666;
+    line-height: 1.7;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 300px;
+}
+
+.faq-item.active .faq-icon {
+    transform: rotate(45deg);
+}
+
+@media (max-width: 600px) {
+
+    .faq-section {
+        margin: 50px auto;
+        padding: 15px;
+    }
+
+    .section-heading h2 {
+        font-size: 30px;
+    }
+
+    .faq-question {
+        font-size: 15px;
+        padding: 17px;
+    }
+
+}
+
+</style>
+
+    </style>
+
+    <style>
+/* ===============================
+   RESPONSIVE 3-DOT MENU
+================================ */
+
+.mobile-menu-wrapper {
+    display: none;
+    position: relative;
+}
+
+.mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f7f2;
+    color: #2f7d4a;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 40px;
+    transition: 0.25s ease;
+}
+
+.mobile-menu-button:hover {
+    background: #dfeee2;
+    transform: scale(1.05);
+}
+
+.mobile-menu {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 230px;
+    padding: 10px;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid #dce7df;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 99999;
+    backdrop-filter: blur(12px);
+}
+
+.mobile-menu.show {
+    display: block;
+    animation: menuOpen 0.2s ease;
+}
+
+.mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    margin: 3px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #26352b;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.mobile-menu a:hover {
+    background: #edf7ef;
+    color: #2f7d4a;
+    transform: translateX(3px);
+}
+
+.mobile-menu a.active {
+    background: #e5f3e8;
+    color: #2f7d4a;
+}
+
+@keyframes menuOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ===============================
+   MOBILE NAVBAR
+================================ */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        position: relative;
+        padding: 12px 18px;
+    }
+
+    .navbar nav {
+        display: none !important;
+    }
+
+    .navbar > .nav-button {
+        display: none;
+    }
+
+    .mobile-menu-wrapper {
+        display: block;
+        margin-left: auto;
+    }
+
+}
+
+
+/* ===============================
+   VERY SMALL SCREEN
+================================ */
+
+@media (max-width: 500px) {
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .mobile-menu {
+        width: 210px;
+    }
+
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     ANIMATED BACKGROUND
+===================================================== -->
+
+<div class="help-background">
+
+    <div class="background-orb orb-one"></div>
+
+    <div class="background-orb orb-two"></div>
+
+    <div class="background-orb orb-three"></div>
+
+</div>
+
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="help-navbar">
+
+
+    <div class="help-logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+
+    <!-- DESKTOP NAV -->
+
+    <nav class="help-nav">
+
+        <a href="/">
+            {{ t.home }}
+        </a>
+
+        <a href="/detect">
+            {{ t.detect }}
+        </a>
+
+        <a href="/performance">
+            {{ t.performance }}
+        </a>
+
+        <a href="/about">
+            {{ t.about }}
+        </a>
+
+        <a href="/review">
+            Reviews
+        </a>
+
+        <a href="/help" class="active">
+            Help
+        </a>
+
+    </nav>
+
+
+    <a href="/detect"
+       class="help-start">
+
+        {{ t.get_started }}
+
+    </a>
+    <!-- ===============================
+     MOBILE 3-DOT MENU
+================================ -->
+
+<div class="mobile-menu-wrapper">
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open menu"
+        aria-expanded="false">
+
+        ⋮
+
+    </button>
+
+
+    <div
+        class="mobile-menu"
+        id="mobileMenu">
+
+        <a href="/">
+            🏠 Home
+        </a>
+
+        <a href="/detect">
+            🔍 Detect Disease
+        </a>
+
+        <a href="/performance">
+            📊 Performance
+        </a>
+
+        <a href="/about">
+            ℹ️ About
+        </a>
+
+        <a href="/review">
+            ⭐ Reviews
+        </a>
+
+        <a href="/support">
+            🛟 Help & Support
+        </a>
+
+    </div>
+
+</div>
+
+
+
+    
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="help-page">
+
+
+    <!-- =================================================
+         HERO
+    ================================================= -->
+
+    <section class="help-hero">
+
+        <div class="help-badge">
+            🛟 AGROZYEN SUPPORT CENTER
+        </div>
+
+
+        <h1>
+            How Can We
+            <span>Help You?</span>
+        </h1>
+
+
+        <p>
+            Find answers, learn how AgroZyen AI works,
+            troubleshoot detection problems, or contact
+            our support team.
+        </p>
+
+    </section>
+
+
+
+    <!-- =================================================
+         SEARCH
+    ================================================= -->
+
+    <div class="help-search">
+
+        <span class="search-icon">
+            🔎
+        </span>
+
+        <input
+            type="text"
+            id="faqSearch"
+            placeholder="Search your question...">
+
+    </div>
+
+
+
+    <!-- =================================================
+         SUPPORT OPTIONS
+    ================================================= -->
+
+    <section class="support-grid">
+
+
+        <div class="support-card">
+
+            <div class="support-icon">
+                🤖
+            </div>
+
+            <h3>
+                AI Detection Help
+            </h3>
+
+            <p>
+                Having trouble getting the right crop
+                disease result? Learn how to upload
+                a better leaf image.
+            </p>
+
+            <a
+                href="/detect"
+                class="support-link">
+
+                Open Detection →
+            </a>
+
+        </div>
+
+
+
+        <div class="support-card">
+
+            <div class="support-icon">
+                📖
+            </div>
+
+            <h3>
+                How It Works
+            </h3>
+
+            <p>
+                Understand the AgroZyen AI detection
+                process and how the model analyzes
+                crop leaf images.
+            </p>
+
+            <a
+                href="/about"
+                class="support-link">
+
+                Learn More →
+            </a>
+
+        </div>
+
+
+
+        <div class="support-card">
+
+            <div class="support-icon">
+                💬
+            </div>
+
+            <h3>
+                User Feedback
+            </h3>
+
+            <p>
+                Share your experience, suggestions,
+                or feedback to help improve AgroZyen AI.
+            </p>
+
+            <a
+                href="/review"
+                class="support-link">
+
+                Write a Review →
+            </a>
+
+        </div>
+
+    </section>
+    <!-- ================= FAQ SECTION ================= -->
+
+<section class="faq-section">
+
+    <div class="section-heading">
+        <span>❓ FAQ</span>
+        <h2>Frequently Asked Questions</h2>
+        <p>
+            Find quick answers to common questions about AgroZyen AI.
+        </p>
+    </div>
+
+
+    <div class="faq-container">
+
+        <!-- FAQ 1 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>What is AgroZyen AI?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    AgroZyen AI is an AI-powered crop disease detection
+                    system that analyzes crop leaf images and provides
+                    disease prediction, confidence, and recommendations.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 2 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>How do I detect a crop disease?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Go to the Detect page, upload a clear image of the
+                    crop leaf, and click the Analyze Image button.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 3 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>What type of image should I upload?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Upload a clear JPG, JPEG, or PNG image of the crop
+                    leaf. Avoid blurry, extremely dark, or unrelated images.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 4 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>What does AI confidence mean?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    AI confidence represents how strongly the model
+                    predicts the detected result based on the uploaded
+                    image.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 5 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>Can AgroZyen AI detect healthy crops?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Yes. If the uploaded leaf appears healthy according
+                    to the trained model, the result can indicate that
+                    the crop is healthy.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 6 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>Is the prediction always accurate?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    AI predictions are estimates and may not always be
+                    correct. For important agricultural decisions,
+                    consider consulting an agriculture expert.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 7 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>How can I submit a review?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Open the Reviews page, enter your name, select a
+                    rating, write your feedback, and submit the review.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- FAQ 8 -->
+        <div class="faq-item">
+
+            <button class="faq-question" type="button">
+                <span>Can I analyze another image?</span>
+                <span class="faq-icon">+</span>
+            </button>
+
+            <div class="faq-answer">
+                <p>
+                    Yes. After viewing a result, simply return to the
+                    Detect page and upload another crop image.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+    <!-- =================================================
+         FAQ
+    ================================================= -->
+
+    <section id="faq">
+
+        <div class="section-heading">
+
+            <div class="small">
+                FREQUENTLY ASKED QUESTIONS
+            </div>
+
+            <h2>
+                Common Questions
+            </h2>
+
+            <p>
+                Quick answers to common AgroZyen AI questions.
+            </p>
+
+        </div>
+
+
+        <div
+            class="faq-container"
+            id="faqContainer">
+
+
+            <!-- FAQ 1 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        How do I detect a crop disease?
+                    </span>
+
+                    <span>
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+                        Open the Detect Disease page,
+                        upload a clear image of a supported
+                        crop leaf, and click Analyze Image.
+                        The AI model will process the image
+                        and display the prediction.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FAQ 2 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        Which crops are supported?
+                    </span>
+
+                    <span>
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+                        Your current AgroZyen AI model supports
+                        Corn, Potato, and Tomato leaf classes.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FAQ 3 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        What type of image should I upload?
+                    </span>
+
+                    <span>
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+                        Use a clear JPG, JPEG, or PNG image.
+                        Try to keep the leaf visible, well-lit,
+                        and reasonably close to the camera.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FAQ 4 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        Why did the AI give an unexpected result?
+                    </span>
+
+                    <span>
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+                        Image quality, lighting, background,
+                        leaf position, and model limitations can
+                        affect the prediction. Upload a clear
+                        leaf image with minimal background.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FAQ 5 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        Is the AI prediction always correct?
+                    </span>
+
+                    <span>
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+                        No AI classifier should be treated as
+                        perfect. The displayed confidence is the
+                        model's prediction confidence, not a
+                        guarantee of a real-world diagnosis.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FAQ 6 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        How can I send feedback?
+                    </span>
+
+                    <span>
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+                        Use the Reviews page to submit your
+                        experience, rating, and suggestions.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div
+                class="no-results"
+                id="noResults">
+
+                🔎 No matching questions found.
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         CONTACT SUPPORT
+    ================================================= -->
+
+    <section id="contact">
+
+
+        <div class="section-heading">
+
+            <div class="small">
+                NEED MORE HELP?
+            </div>
+
+            <h2>
+                Contact Support
+            </h2>
+
+            <p>
+                Send us your question or describe a problem.
+            </p>
+
+        </div>
+
+
+
+        <div class="contact-section">
+
+
+            <!-- CONTACT INFORMATION -->
+
+            <div class="contact-info">
+
+                <h2>
+                    We're Here to Help
+                </h2>
+
+                <p>
+                    If you are facing a problem while using
+                    AgroZyen AI, describe the issue clearly
+                    and provide as much useful information
+                    as possible.
+                </p>
+
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-detail-icon">
+                        📧
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Email Support
+                        </strong>
+
+                        <span>
+                            support@agrozyen.ai
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-detail-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            AI Detection
+                        </strong>
+
+                        <span>
+                            Available through the Detect page
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-detail-icon">
+                        ⭐
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Feedback
+                        </strong>
+
+                        <span>
+                            Share your experience through Reviews
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CONTACT FORM -->
+
+            <div class="contact-form">
+
+                <h2>
+                    Send a Message
+                </h2>
+
+
+                <form
+                    id="supportForm">
+
+
+                    <div class="form-group">
+
+                        <label for="supportName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="supportName"
+                            placeholder="Enter your name"
+                            required>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label for="supportEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="supportEmail"
+                            placeholder="Enter your email"
+                            required>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label for="supportTopic">
+                            Topic
+                        </label>
+
+                        <select
+                            id="supportTopic"
+                            required>
+
+                            <option value="">
+                                Select a topic
+                            </option>
+
+                            <option>
+                                Disease Detection
+                            </option>
+
+                            <option>
+                                Upload Problem
+                            </option>
+
+                            <option>
+                                Prediction Problem
+                            </option>
+
+                            <option>
+                                Website Problem
+                            </option>
+
+                            <option>
+                                General Question
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+                        <label for="supportMessage">
+                            Message
+                        </label>
+
+                        <textarea
+                            id="supportMessage"
+                            placeholder="Describe your problem..."
+                            required></textarea>
+
+                    </div>
+
+
+
+                    <button
+                        type="submit"
+                        class="send-button">
+
+                        📩 Send Support Request
+
+                    </button>
+
+
+                    <div
+                        class="form-success"
+                        id="formSuccess">
+
+                        ✅ Your message has been prepared.
+                        Please use your email application
+                        to send it to support.
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="help-footer">
+
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+
+    <p>
+        {{ t.footer }}
+    </p>
+
+
+    <p class="copyright">
+        © 2026 AgroZyen AI | Developed by DHRUV
+    </p>
+
+</footer>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+
+/* =====================================================
+   THREE DOT MENU
+===================================================== */
+
+const menuButton =
+    document.getElementById("menuButton");
+
+const dropdownMenu =
+    document.getElementById("dropdownMenu");
+
+
+if (menuButton && dropdownMenu) {
+
+    menuButton.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            dropdownMenu.classList.toggle("show");
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        function () {
+
+            dropdownMenu.classList.remove("show");
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   FAQ ACCORDION
+===================================================== */
+
+const faqQuestions =
+    document.querySelectorAll(".faq-question");
+
+
+faqQuestions.forEach(function (question) {
+
+    question.addEventListener(
+        "click",
+        function () {
+
+            const item =
+                this.parentElement;
+
+            const answer =
+                item.querySelector(".faq-answer");
+
+
+            /* Close other FAQ items */
+
+            document
+                .querySelectorAll(".faq-item.open")
+                .forEach(function (openItem) {
+
+                    if (openItem !== item) {
+
+                        openItem.classList.remove("open");
+
+                        const openAnswer =
+                            openItem.querySelector(".faq-answer");
+
+                        openAnswer.style.maxHeight =
+                            null;
+
+                    }
+
+                });
+
+
+            /* Toggle current item */
+
+            item.classList.toggle("open");
+
+
+            if (item.classList.contains("open")) {
+
+                answer.style.maxHeight =
+                    answer.scrollHeight + "px";
+
+            } else {
+
+                answer.style.maxHeight =
+                    null;
+
+            }
+
+        }
+    );
+
+});
+
+
+
+/* =====================================================
+   FAQ SEARCH
+===================================================== */
+
+const faqSearch =
+    document.getElementById("faqSearch");
+
+const faqItems =
+    document.querySelectorAll(".faq-item");
+
+const noResults =
+    document.getElementById("noResults");
+
+
+if (faqSearch) {
+
+    faqSearch.addEventListener(
+        "input",
+        function () {
+
+            const searchText =
+                this.value
+                    .toLowerCase()
+                    .trim();
+
+
+            let visibleCount = 0;
+
+
+            faqItems.forEach(function (item) {
+
+                const text =
+                    item.innerText.toLowerCase();
+
+
+                if (
+                    searchText === "" ||
+                    text.includes(searchText)
+                ) {
+
+                    item.style.display =
+                        "block";
+
+                    visibleCount++;
+
+                } else {
+
+                    item.style.display =
+                        "none";
+
+                }
+
+            });
+
+
+            if (noResults) {
+
+                noResults.style.display =
+                    visibleCount === 0
+                        ? "block"
+                        : "none";
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   SUPPORT FORM
+===================================================== */
+
+const supportForm =
+    document.getElementById("supportForm");
+
+const formSuccess =
+    document.getElementById("formSuccess");
+
+
+if (supportForm) {
+
+    supportForm.addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            const name =
+                document
+                    .getElementById("supportName")
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById("supportEmail")
+                    .value
+                    .trim();
+
+            const topic =
+                document
+                    .getElementById("supportTopic")
+                    .value
+                    .trim();
+
+            const message =
+                document
+                    .getElementById("supportMessage")
+                    .value
+                    .trim();
+
+
+            if (
+                !name ||
+                !email ||
+                !topic ||
+                !message
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * Opens the user's email application.
+             *
+             * This does not require a backend route.
+             */
+
+            const subject =
+                encodeURIComponent(
+                    "AgroZyen Support - " + topic
+                );
+
+
+            const body =
+                encodeURIComponent(
+                    "Name: " +
+                    name +
+                    "\n\nEmail: " +
+                    email +
+                    "\n\nTopic: " +
+                    topic +
+                    "\n\nMessage:\n" +
+                    message
+                );
+
+
+            window.location.href =
+                "mailto:support@agrozyen.ai" +
+                "?subject=" +
+                subject +
+                "&body=" +
+                body;
+
+
+            if (formSuccess) {
+
+                formSuccess.style.display =
+                    "block";
+
+            }
+
+        }
+    );
+
+}
+
+
+</script>
+
+<script>
+
+/* ================= FAQ ACCORDION ================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const faqQuestions =
+        document.querySelectorAll(".faq-question");
+
+    faqQuestions.forEach(function (question) {
+
+        question.addEventListener("click", function () {
+
+            const currentItem =
+                this.parentElement;
+
+            const allItems =
+                document.querySelectorAll(".faq-item");
+
+            allItems.forEach(function (item) {
+
+                if (item !== currentItem) {
+                    item.classList.remove("active");
+                }
+
+            });
+
+            currentItem.classList.toggle("active");
+
+        });
+
+    });
+
+});
+
+</script>
+
+<script>
+
+/* =========================================
+   MOBILE 3-DOT MENU
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuButton =
+        document.getElementById("mobileMenuButton");
+
+    const menu =
+        document.getElementById("mobileMenu");
+
+
+    if (!menuButton || !menu) {
+        return;
+    }
+
+
+    menuButton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const isOpen =
+            menu.classList.toggle("show");
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+    });
+
+
+    /* Close when clicking outside */
+
+    document.addEventListener("click", function (event) {
+
+        if (
+            !menu.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+    });
+
+
+    /* Close after selecting a link */
+
+    menu.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+</body>
+
+</html>

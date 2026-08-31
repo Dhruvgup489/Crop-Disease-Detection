@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="{{ current_language }}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ t.detect }} | AgroZyen AI
+    </title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        /* =====================================================
+           AGROZYEN 3D DETECTION PAGE
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        .detect-page-body {
+            overflow-x: hidden;
+        }
+
+        /* =====================================================
+           3D BACKGROUND
+        ===================================================== */
+
+        .ai-background {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(76, 175, 80, 0.10),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 75%,
+                    rgba(0, 150, 136, 0.08),
+                    transparent 30%
+                );
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0.35;
+            animation: floatOrb 8s ease-in-out infinite;
+        }
+
+        .orb-one {
+            width: 180px;
+            height: 180px;
+            top: 12%;
+            left: -70px;
+            background:
+                radial-gradient(
+                    circle at 35% 30%,
+                    rgba(255,255,255,0.9),
+                    rgba(76,175,80,0.15),
+                    transparent 70%
+                );
+        }
+
+        .orb-two {
+            width: 250px;
+            height: 250px;
+            right: -100px;
+            top: 35%;
+            background:
+                radial-gradient(
+                    circle at 35% 30%,
+                    rgba(255,255,255,0.8),
+                    rgba(46,125,50,0.12),
+                    transparent 70%
+                );
+            animation-delay: -3s;
+        }
+
+        .orb-three {
+            width: 130px;
+            height: 130px;
+            left: 20%;
+            bottom: 5%;
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(129,199,132,0.20),
+                    transparent 70%
+                );
+            animation-delay: -5s;
+        }
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform:
+                    translate3d(0,0,0)
+                    scale(1);
+            }
+
+            50% {
+                transform:
+                    translate3d(0,-30px,0)
+                    scale(1.08);
+            }
+
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .scanner-hero {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 70px 20px 35px;
+            text-align: center;
+        }
+
+        .scanner-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.75);
+            border: 1px solid rgba(79,143,79,0.18);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            color: #3f7e43;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4f9b54;
+            box-shadow: 0 0 0 5px rgba(79,155,84,0.12);
+            animation: pulseDot 1.8s infinite;
+        }
+
+        @keyframes pulseDot {
+
+            0% {
+                box-shadow:
+                    0 0 0 0 rgba(79,155,84,0.35);
+            }
+
+            70% {
+                box-shadow:
+                    0 0 0 10px rgba(79,155,84,0);
+            }
+
+            100% {
+                box-shadow:
+                    0 0 0 0 rgba(79,155,84,0);
+            }
+
+        }
+
+        .scanner-hero h1 {
+            margin: 18px 0 10px;
+            font-size: clamp(38px, 6vw, 68px);
+            line-height: 1.05;
+            letter-spacing: -2px;
+        }
+
+        .scanner-hero h1 span {
+            color: #4f8f4f;
+        }
+
+        .scanner-hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: #66736a;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           MAIN SCANNER
+        ===================================================== */
+
+        .scanner-container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .scanner-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 0.65fr;
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        /* =====================================================
+           GLASS CARD
+        ===================================================== */
+
+        .glass-card {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 28px;
+            box-shadow:
+                0 25px 70px rgba(25,65,35,0.10),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        /* =====================================================
+           UPLOAD CARD
+        ===================================================== */
+
+        .scanner-upload-card {
+            padding: 35px;
+            perspective: 1000px;
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .scanner-upload-card:hover {
+            box-shadow:
+                0 35px 80px rgba(25,65,35,0.14);
+        }
+
+        .upload-zone {
+            min-height: 430px;
+            border: 2px dashed #b8ceb9;
+            border-radius: 23px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s ease;
+        }
+
+        .upload-zone::before {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(79,143,79,0.08),
+                    transparent 70%
+                );
+            animation: uploadGlow 5s ease-in-out infinite;
+        }
+
+        @keyframes uploadGlow {
+
+            0%,
+            100% {
+                transform: scale(0.9);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+
+        }
+
+        .upload-zone.dragging {
+            border-color: #4f8f4f;
+            background: rgba(79,143,79,0.06);
+            transform: translateY(-4px);
+        }
+
+        /* =====================================================
+           3D UPLOAD ORB
+        ===================================================== */
+
+        .ai-orb {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            position: relative;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(
+                    circle at 30% 25%,
+                    #ffffff,
+                    #d9f1dc 30%,
+                    #83bb87 65%,
+                    #3e7542 100%
+                );
+            box-shadow:
+                inset -15px -20px 30px rgba(0,0,0,0.14),
+                inset 15px 15px 25px rgba(255,255,255,0.8),
+                0 20px 45px rgba(50,100,55,0.22);
+            transform-style: preserve-3d;
+            animation: orbRotate 7s linear infinite;
+        }
+
+        .ai-orb::before {
+            content: "";
+            position: absolute;
+            width: 155px;
+            height: 155px;
+            border: 1px solid rgba(79,143,79,0.35);
+            border-radius: 50%;
+            transform: rotateX(65deg);
+        }
+
+        .ai-orb::after {
+            content: "";
+            position: absolute;
+            width: 175px;
+            height: 175px;
+            border: 1px dashed rgba(79,143,79,0.20);
+            border-radius: 50%;
+            transform: rotateY(65deg);
+        }
+
+        .orb-icon {
+            font-size: 52px;
+            position: relative;
+            z-index: 2;
+            animation: orbIcon 4s ease-in-out infinite;
+        }
+
+        @keyframes orbRotate {
+
+            0% {
+                transform: rotateY(0deg) rotateX(8deg);
+            }
+
+            100% {
+                transform: rotateY(360deg) rotateX(8deg);
+            }
+
+        }
+
+        @keyframes orbIcon {
+
+            0%,
+            100% {
+                transform: translateZ(20px) scale(1);
+            }
+
+            50% {
+                transform: translateZ(35px) scale(1.08);
+            }
+
+        }
+
+        .upload-zone h2 {
+            position: relative;
+            margin: 5px 0 10px;
+            font-size: 26px;
+        }
+
+        .upload-zone p {
+            position: relative;
+            max-width: 500px;
+            color: #718077;
+            line-height: 1.6;
+            margin: 0 0 22px;
+        }
+
+        #leafImage {
+            display: none;
+        }
+
+        .choose-image-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 14px 24px;
+            border-radius: 13px;
+            color: white;
+            background: linear-gradient(
+                135deg,
+                #5b9b60,
+                #3f7d44
+            );
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow:
+                0 12px 25px rgba(63,125,68,0.25);
+            transition: 0.25s ease;
+        }
+
+        .choose-image-button:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 17px 30px rgba(63,125,68,0.30);
+        }
+
+        .format-text {
+            position: relative;
+            margin-top: 15px !important;
+            margin-bottom: 0 !important;
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           IMAGE PREVIEW
+        ===================================================== */
+
+        .preview-area {
+            display: none;
+            width: 100%;
+            position: relative;
+        }
+
+        .preview-area.show {
+            display: block;
+        }
+
+        .preview-frame {
+            width: 100%;
+            max-width: 500px;
+            height: 360px;
+            margin: 0 auto;
+            border-radius: 22px;
+            overflow: hidden;
+            position: relative;
+            background: #eaf1eb;
+            transform-style: preserve-3d;
+            box-shadow:
+                0 20px 45px rgba(30,70,35,0.18);
+        }
+
+        .preview-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background: #f1f5f2;
+        }
+
+        /* =====================================================
+           SCANNING EFFECT
+        ===================================================== */
+
+        .scan-line {
+            display: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 3px;
+            background: #66a86b;
+            box-shadow:
+                0 0 15px #66a86b,
+                0 0 30px rgba(102,168,107,0.7);
+            z-index: 5;
+            animation: scanning 2.2s linear infinite;
+        }
+
+        .scanning .scan-line {
+            display: block;
+        }
+
+        @keyframes scanning {
+
+            0% {
+                top: 0;
+            }
+
+            50% {
+                top: calc(100% - 3px);
+            }
+
+            100% {
+                top: 0;
+            }
+
+        }
+
+        .scan-corners {
+            position: absolute;
+            inset: 14px;
+            pointer-events: none;
+            z-index: 4;
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 14px;
+        }
+
+        .preview-meta {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .meta-chip {
+            background: #f3f8f3;
+            border: 1px solid #dce8dd;
+            padding: 8px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           IMAGE ACTIONS
+        ===================================================== */
+
+        .image-actions {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .small-action {
+            border: 1px solid #d9e3da;
+            background: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .small-action:hover {
+            background: #f3f8f3;
+        }
+
+        .remove-action {
+            color: #a34c4c;
+        }
+
+        /* =====================================================
+           ANALYZE BUTTON
+        ===================================================== */
+
+        .analyze-main-button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 17px 25px;
+            border: none;
+            border-radius: 14px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f914f,
+                    #286b32
+                );
+            color: white;
+            font-size: 17px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow:
+                0 15px 30px rgba(44,111,52,0.22);
+            transition: 0.25s ease;
+        }
+
+        .analyze-main-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow:
+                0 20px 35px rgba(44,111,52,0.28);
+        }
+
+        .analyze-main-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .analyze-main-button.loading {
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            vertical-align: -3px;
+            margin-right: 8px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        /* =====================================================
+           SIDE PANEL
+        ===================================================== */
+
+        .ai-side-card {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .side-ai-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #edf7ee;
+            font-size: 25px;
+        }
+
+        .side-heading h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .side-heading p {
+            margin: 4px 0 0;
+            color: #78857c;
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        .ai-status {
+            border-radius: 15px;
+            padding: 15px;
+            background: #f5faf5;
+            border: 1px solid #dfeae0;
+            margin-bottom: 20px;
+        }
+
+        .status-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .status-ready {
+            color: #398142;
+        }
+
+        .status-bar {
+            height: 7px;
+            background: #dce8dd;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .status-progress {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                #74b778,
+                #3e8044
+            );
+            border-radius: inherit;
+        }
+
+        /* =====================================================
+           AI FEATURES
+        ===================================================== */
+
+        .ai-check-list {
+            display: grid;
+            gap: 11px;
+        }
+
+        .ai-check {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px;
+            border-radius: 12px;
+            background: #fafcfb;
+            border: 1px solid #edf1ee;
+            font-size: 14px;
+        }
+
+        .check-icon {
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e7f4e8;
+            color: #398142;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        /* =====================================================
+           CROP SUPPORT
+        ===================================================== */
+
+        .supported-title {
+            margin: 25px 0 13px;
+            font-size: 15px;
+        }
+
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .crop-card {
+            text-align: center;
+            padding: 13px 5px;
+            border-radius: 12px;
+            background: #f8faf8;
+            border: 1px solid #e5ece6;
+            transition: 0.2s ease;
+        }
+
+        .crop-card:hover {
+            transform: translateY(-3px);
+            border-color: #bcd5bd;
+            background: #f1f8f2;
+        }
+
+        .crop-card .emoji {
+            display: block;
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+
+        .crop-card span {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           TIPS
+        ===================================================== */
+
+        .quick-tips {
+            margin-top: auto;
+            padding-top: 24px;
+        }
+
+        .quick-tips h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .quick-tip {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: #68766d;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* =====================================================
+           BELOW SCANNER
+        ===================================================== */
+
+        .scanner-lower {
+            max-width: 1120px;
+            margin: 28px auto 70px;
+            padding: 0 20px;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .feature-card {
+            padding: 24px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.78);
+            border: 1px solid rgba(220,230,221,0.9);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.05);
+            transition: 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform:
+                perspective(700px)
+                rotateX(2deg)
+                translateY(-5px);
+            box-shadow:
+                0 20px 45px rgba(30,70,35,0.10);
+        }
+
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 7px;
+        }
+
+        .feature-card p {
+            margin: 0;
+            color: #718077;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           SECURITY
+        ===================================================== */
+
+        .privacy-note {
+            margin-top: 18px;
+            text-align: center;
+            color: #78857c;
+            font-size: 13px;
+        }
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        .upload-error {
+            display: none;
+            margin-top: 14px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            background: #fff1f1;
+            color: #a24747;
+            border: 1px solid #f0d0d0;
+            font-size: 13px;
+        }
+
+        .upload-error.show {
+            display: block;
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .scanner-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-side-card {
+                display: block;
+            }
+
+            .quick-tips {
+                margin-top: 25px;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .scanner-hero {
+                padding-top: 45px;
+            }
+
+            .scanner-hero h1 {
+                letter-spacing: -1px;
+            }
+
+            .scanner-upload-card {
+                padding: 16px;
+            }
+
+            .upload-zone {
+                min-height: 390px;
+                padding: 22px;
+            }
+
+            .ai-orb {
+                width: 105px;
+                height: 105px;
+            }
+
+            .ai-orb::before {
+                width: 125px;
+                height: 125px;
+            }
+
+            .ai-orb::after {
+                width: 145px;
+                height: 145px;
+            }
+
+            .orb-icon {
+                font-size: 42px;
+            }
+
+            .preview-frame {
+                height: 280px;
+            }
+
+            .feature-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+    <style>
+/* ===============================
+   RESPONSIVE 3-DOT MENU
+================================ */
+
+.mobile-menu-wrapper {
+    display: none;
+    position: relative;
+}
+
+.mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f7f2;
+    color: #2f7d4a;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 40px;
+    transition: 0.25s ease;
+}
+
+.mobile-menu-button:hover {
+    background: #dfeee2;
+    transform: scale(1.05);
+}
+
+.mobile-menu {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 230px;
+    padding: 10px;
+    background: rgba(255,255,255,0.98);
+    border: 1px solid #dce7df;
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 99999;
+    backdrop-filter: blur(12px);
+}
+
+.mobile-menu.show {
+    display: block;
+    animation: menuOpen 0.2s ease;
+}
+
+.mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    margin: 3px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #26352b;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.mobile-menu a:hover {
+    background: #edf7ef;
+    color: #2f7d4a;
+    transform: translateX(3px);
+}
+
+.mobile-menu a.active {
+    background: #e5f3e8;
+    color: #2f7d4a;
+}
+
+@keyframes menuOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ===============================
+   MOBILE NAVBAR
+================================ */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        position: relative;
+        padding: 12px 18px;
+    }
+
+    .navbar nav {
+        display: none !important;
+    }
+
+    .navbar > .nav-button {
+        display: none;
+    }
+
+    .mobile-menu-wrapper {
+        display: block;
+        margin-left: auto;
+    }
+
+}
+
+
+/* ===============================
+   VERY SMALL SCREEN
+================================ */
+
+@media (max-width: 500px) {
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .mobile-menu {
+        width: 210px;
+    }
+
+}
+</style>
+
+</head>
+
+
+<body class="detect-page-body">
+
+
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
+<div class="ai-background">
+
+    <div class="floating-orb orb-one"></div>
+
+    <div class="floating-orb orb-two"></div>
+
+    <div class="floating-orb orb-three"></div>
+
+</div>
+
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+
+    <nav>
+
+        <a href="/">
+            {{ t.home }}
+        </a>
+
+        <a href="/detect" class="active">
+            {{ t.detect }}
+        </a>
+
+        <a href="/performance">
+            {{ t.performance }}
+        </a>
+
+        <a href="/about">
+            {{ t.about }}
+        </a>
+
+        <a href="/review">
+            Reviews
+        </a>
+
+
+        <div class="language-selector">
+
+            <span>🌐</span>
+
+            <select onchange="changeLanguage(this.value)">
+
+                <option value="en"
+                    {% if current_language == "en" %}
+                    selected
+                    {% endif %}>
+                    English
+                </option>
+
+                <option value="hi"
+                    {% if current_language == "hi" %}
+                    selected
+                    {% endif %}>
+                    हिंदी
+                </option>
+
+                <option value="mr"
+                    {% if current_language == "mr" %}
+                    selected
+                    {% endif %}>
+                    मराठी
+                </option>
+
+                <option value="te"
+                    {% if current_language == "te" %}
+                    selected
+                    {% endif %}>
+                    తెలుగు
+                </option>
+
+                <option value="gu"
+                    {% if current_language == "gu" %}
+                    selected
+                    {% endif %}>
+                    ગુજરાતી
+                </option>
+
+            </select>
+
+        </div>
+
+    </nav>
+
+
+    <a href="/detect"
+       class="nav-button">
+
+        {{ t.get_started }}
+
+    </a>
+    <!-- ===============================
+     MOBILE 3-DOT MENU
+================================ -->
+
+<div class="mobile-menu-wrapper">
+
+    <button
+        type="button"
+        class="mobile-menu-button"
+        id="mobileMenuButton"
+        aria-label="Open menu"
+        aria-expanded="false">
+
+        ⋮
+
+    </button>
+
+
+    <div
+        class="mobile-menu"
+        id="mobileMenu">
+
+        <a href="/">
+            🏠 Home
+        </a>
+
+        <a href="/detect">
+            🔍 Detect Disease
+        </a>
+
+        <a href="/performance">
+            📊 Performance
+        </a>
+
+        <a href="/about">
+            ℹ️ About
+        </a>
+
+        <a href="/review">
+            ⭐ Reviews
+        </a>
+
+        <a href="/support">
+            🛟 Help & Support
+        </a>
+
+    </div>
+
+</div>
+   
+
+</header>
+
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="scanner-hero">
+
+    <div class="scanner-badge">
+
+        <span class="live-dot"></span>
+
+        AI CROP HEALTH SCANNER
+
+    </div>
+
+
+    <h1>
+
+        Smart Crop
+        <span>Diagnosis</span>
+
+    </h1>
+
+
+    <p>
+
+        Upload a clear image of your crop leaf.
+        AgroZyen AI will analyze the visual patterns
+        and provide a disease prediction with confidence.
+
+    </p>
+
+</section>
+
+
+
+<!-- =====================================================
+     SCANNER
+===================================================== -->
+
+<main class="scanner-container">
+
+    <div class="scanner-grid">
+
+
+        <!-- =================================================
+             UPLOAD CARD
+        ================================================= -->
+
+        <section class="glass-card scanner-upload-card"
+                 id="tiltCard">
+
+
+            <form
+                id="detectionForm"
+                action="/predict"
+                method="POST"
+                enctype="multipart/form-data">
+
+
+                <div
+                    class="upload-zone"
+                    id="uploadZone">
+
+
+                    <!-- 3D ORB -->
+
+                    <div class="ai-orb">
+
+                        <div class="orb-icon">
+                            🌿
+                        </div>
+
+                    </div>
+
+
+                    <!-- DEFAULT CONTENT -->
+
+                    <div id="uploadContent">
+
+                        <h2>
+                            Upload Crop Leaf
+                        </h2>
+
+                        <p>
+
+                            Drop your leaf image here
+                            or select an image from your device.
+
+                        </p>
+
+
+                        <input
+                            type="file"
+                            id="leafImage"
+                            name="leafImage"
+                            accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                            required
+                        >
+
+
+                        <label
+                            for="leafImage"
+                            class="choose-image-button">
+
+                            📷 Choose Image
+
+                        </label>
+
+
+                        <p class="format-text">
+
+                            JPG, JPEG or PNG • Maximum 10 MB
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- PREVIEW -->
+
+                    <div
+                        class="preview-area"
+                        id="previewArea">
+
+
+                        <div
+                            class="preview-frame"
+                            id="previewFrame">
+
+
+                            <img
+                                id="imagePreview"
+                                src=""
+                                alt="Crop leaf preview"
+                            >
+
+
+                            <div class="scan-line"></div>
+
+                            <div class="scan-corners"></div>
+
+
+                        </div>
+
+
+                        <div class="preview-meta">
+
+                            <span
+                                class="meta-chip"
+                                id="fileName">
+                                📄 Image selected
+                            </span>
+
+                            <span
+                                class="meta-chip"
+                                id="fileSize">
+                                📦 0 KB
+                            </span>
+
+                        </div>
+
+
+                        <div class="image-actions">
+
+                            <label
+                                for="leafImage"
+                                class="small-action">
+
+                                🔄 Change Image
+
+                            </label>
+
+
+                            <button
+                                type="button"
+                                class="small-action remove-action"
+                                id="removeImage">
+
+                                ❌ Remove
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="upload-error"
+                        id="uploadError">
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- ANALYZE -->
+
+                <button
+                    type="submit"
+                    class="analyze-main-button"
+                    id="analyzeButton"
+                    disabled>
+
+                    🔍 Start AI Analysis
+
+                </button>
+
+
+                <p class="privacy-note">
+
+                    🔒 Your image is used only for analysis.
+
+                </p>
+
+
+            </form>
+
+        </section>
+
+
+
+        <!-- =================================================
+             AI SIDE PANEL
+        ================================================= -->
+
+        <aside class="glass-card ai-side-card">
+
+
+            <div class="side-heading">
+
+                <div class="side-ai-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h2>
+                        AI System
+                    </h2>
+
+                    <p>
+                        AgroZyen diagnostic engine
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STATUS -->
+
+            <div class="ai-status">
+
+                <div class="status-top">
+
+                    <span>
+                        System Status
+                    </span>
+
+                    <span class="status-ready">
+                        ● READY
+                    </span>
+
+                </div>
+
+
+                <div class="status-bar">
+
+                    <div class="status-progress"></div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CHECKS -->
+
+            <div class="ai-check-list">
+
+
+                <div class="ai-check">
+
+                    <span class="check-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        AI model loaded
+                    </span>
+
+                </div>
+
+
+                <div class="ai-check">
+
+                    <span class="check-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Image classification ready
+                    </span>
+
+                </div>
+
+
+                <div class="ai-check">
+
+                    <span class="check-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Confidence analysis enabled
+                    </span>
+
+                </div>
+
+
+                <div class="ai-check">
+
+                    <span class="check-icon">
+                        ✓
+                    </span>
+
+                    <span>
+                        Disease information available
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- SUPPORTED CROPS -->
+
+            <h3 class="supported-title">
+                Supported Crops
+            </h3>
+
+
+            <div class="crop-grid">
+
+
+                <div class="crop-card">
+
+                    <span class="emoji">
+                        🌽
+                    </span>
+
+                    <span>
+                        Corn
+                    </span>
+
+                </div>
+
+
+                <div class="crop-card">
+
+                    <span class="emoji">
+                        🥔
+                    </span>
+
+                    <span>
+                        Potato
+                    </span>
+
+                </div>
+
+
+                <div class="crop-card">
+
+                    <span class="emoji">
+                        🍅
+                    </span>
+
+                    <span>
+                        Tomato
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- TIPS -->
+
+            <div class="quick-tips">
+
+                <h3>
+                    💡 Better Results
+                </h3>
+
+
+                <div class="quick-tip">
+
+                    <span>✓</span>
+
+                    <span>
+                        Use a sharp and focused leaf image.
+                    </span>
+
+                </div>
+
+
+                <div class="quick-tip">
+
+                    <span>✓</span>
+
+                    <span>
+                        Use good natural lighting.
+                    </span>
+
+                </div>
+
+
+                <div class="quick-tip">
+
+                    <span>✓</span>
+
+                    <span>
+                        Keep the affected area visible.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </aside>
+
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     FEATURES
+===================================================== -->
+
+<section class="scanner-lower">
+
+
+    <div class="feature-row">
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🧠
+            </div>
+
+            <h3>
+                AI-Powered Analysis
+            </h3>
+
+            <p>
+                The trained classification model examines
+                visual patterns in your uploaded leaf image.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                ⚡
+            </div>
+
+            <h3>
+                Fast Prediction
+            </h3>
+
+            <p>
+                Get your crop disease prediction after
+                the image is processed by the AI model.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                📊
+            </div>
+
+            <h3>
+                Confidence Score
+            </h3>
+
+            <p>
+                View the model's confidence level together
+                with the predicted crop disease.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div class="logo">
+        🌱 AgroZyen <span>AI</span>
+    </div>
+
+
+    <p>
+        {{ t.footer }}
+    </p>
+
+
+    <p class="copyright">
+        © 2026 AgroZyen AI | Developed by DHRUV
+    </p>
+
+</footer>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const imageInput =
+    document.getElementById("leafImage");
+
+const uploadZone =
+    document.getElementById("uploadZone");
+
+const uploadContent =
+    document.getElementById("uploadContent");
+
+const previewArea =
+    document.getElementById("previewArea");
+
+const previewFrame =
+    document.getElementById("previewFrame");
+
+const imagePreview =
+    document.getElementById("imagePreview");
+
+const fileName =
+    document.getElementById("fileName");
+
+const fileSize =
+    document.getElementById("fileSize");
+
+const removeImage =
+    document.getElementById("removeImage");
+
+const analyzeButton =
+    document.getElementById("analyzeButton");
+
+const detectionForm =
+    document.getElementById("detectionForm");
+
+const uploadError =
+    document.getElementById("uploadError");
+
+const tiltCard =
+    document.getElementById("tiltCard");
+
+
+/* =====================================================
+   FORMAT FILE SIZE
+===================================================== */
+
+function formatFileSize(bytes) {
+
+    if (bytes < 1024) {
+
+        return bytes + " B";
+
+    }
+
+    if (bytes < 1024 * 1024) {
+
+        return (
+            bytes / 1024
+        ).toFixed(1) + " KB";
+
+    }
+
+    return (
+        bytes / (1024 * 1024)
+    ).toFixed(1) + " MB";
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(message) {
+
+    uploadError.textContent =
+        message;
+
+    uploadError.classList.add(
+        "show"
+    );
+
+}
+
+
+function clearError() {
+
+    uploadError.textContent =
+        "";
+
+    uploadError.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   HANDLE FILE
+===================================================== */
+
+function handleFile(file) {
+
+    clearError();
+
+
+    if (!file) {
+
+        return;
+
+    }
+
+
+    const allowedTypes = [
+
+        "image/jpeg",
+
+        "image/png"
+
+    ];
+
+
+    if (
+        !allowedTypes.includes(
+            file.type
+        )
+    ) {
+
+        showError(
+            "Please choose a JPG, JPEG, or PNG image."
+        );
+
+        resetImage();
+
+        return;
+
+    }
+
+
+    const maxSize =
+        10 * 1024 * 1024;
+
+
+    if (file.size > maxSize) {
+
+        showError(
+            "Image size must be less than 10 MB."
+        );
+
+        resetImage();
+
+        return;
+
+    }
+
+
+    fileName.innerHTML =
+        "📄 " + file.name;
+
+
+    fileSize.innerHTML =
+        "📦 " +
+        formatFileSize(
+            file.size
+        );
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(event) {
+
+            imagePreview.src =
+                event.target.result;
+
+
+            uploadContent.style.display =
+                "none";
+
+
+            previewArea.classList.add(
+                "show"
+            );
+
+
+            analyzeButton.disabled =
+                false;
+
+        };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =====================================================
+   INPUT CHANGE
+===================================================== */
+
+imageInput.addEventListener(
+    "change",
+    function() {
+
+        handleFile(
+            this.files[0]
+        );
+
+    }
+);
+
+
+/* =====================================================
+   RESET IMAGE
+===================================================== */
+
+function resetImage() {
+
+    imageInput.value =
+        "";
+
+    imagePreview.src =
+        "";
+
+    uploadContent.style.display =
+        "block";
+
+    previewArea.classList.remove(
+        "show"
+    );
+
+    analyzeButton.disabled =
+        true;
+
+    uploadZone.classList.remove(
+        "scanning"
+    );
+
+}
+
+
+/* =====================================================
+   REMOVE
+===================================================== */
+
+removeImage.addEventListener(
+    "click",
+    function() {
+
+        resetImage();
+
+    }
+);
+
+
+/* =====================================================
+   DRAG & DROP
+===================================================== */
+
+uploadZone.addEventListener(
+    "dragover",
+    function(event) {
+
+        event.preventDefault();
+
+        uploadZone.classList.add(
+            "dragging"
+        );
+
+    }
+);
+
+
+uploadZone.addEventListener(
+    "dragleave",
+    function() {
+
+        uploadZone.classList.remove(
+            "dragging"
+        );
+
+    }
+);
+
+
+uploadZone.addEventListener(
+    "drop",
+    function(event) {
+
+        event.preventDefault();
+
+        uploadZone.classList.remove(
+            "dragging"
+        );
+
+
+        const file =
+            event.dataTransfer.files[0];
+
+
+        if (!file) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const dataTransfer =
+                new DataTransfer();
+
+            dataTransfer.items.add(
+                file
+            );
+
+            imageInput.files =
+                dataTransfer.files;
+
+        } catch (error) {
+
+            console.log(
+                "Could not assign dropped file."
+            );
+
+        }
+
+
+        handleFile(file);
+
+    }
+);
+
+
+/* =====================================================
+   3D TILT EFFECT
+===================================================== */
+
+if (window.innerWidth > 850) {
+
+    tiltCard.addEventListener(
+        "mousemove",
+        function(event) {
+
+            const rect =
+                tiltCard.getBoundingClientRect();
+
+
+            const x =
+                event.clientX -
+                rect.left;
+
+
+            const y =
+                event.clientY -
+                rect.top;
+
+
+            const centerX =
+                rect.width / 2;
+
+
+            const centerY =
+                rect.height / 2;
+
+
+            const rotateX =
+                ((y - centerY) /
+                centerY) * -2;
+
+
+            const rotateY =
+                ((x - centerX) /
+                centerX) * 2;
+
+
+            tiltCard.style.transform =
+                "perspective(1000px) " +
+                "rotateX(" +
+                rotateX +
+                "deg) " +
+                "rotateY(" +
+                rotateY +
+                "deg)";
+
+        }
+    );
+
+
+    tiltCard.addEventListener(
+        "mouseleave",
+        function() {
+
+            tiltCard.style.transform =
+                "perspective(1000px) " +
+                "rotateX(0deg) " +
+                "rotateY(0deg)";
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   IMAGE 3D TILT
+===================================================== */
+
+previewFrame.addEventListener(
+    "mousemove",
+    function(event) {
+
+        if (!imagePreview.src) {
+
+            return;
+
+        }
+
+
+        const rect =
+            previewFrame.getBoundingClientRect();
+
+
+        const x =
+            event.clientX -
+            rect.left;
+
+
+        const y =
+            event.clientY -
+            rect.top;
+
+
+        const rotateY =
+            ((x - rect.width / 2) /
+            rect.width) * 8;
+
+
+        const rotateX =
+            ((y - rect.height / 2) /
+            rect.height) * -8;
+
+
+        previewFrame.style.transform =
+            "perspective(900px) " +
+            "rotateX(" +
+            rotateX +
+            "deg) " +
+            "rotateY(" +
+            rotateY +
+            "deg)";
+
+    }
+);
+
+
+previewFrame.addEventListener(
+    "mouseleave",
+    function() {
+
+        previewFrame.style.transform =
+            "perspective(900px) " +
+            "rotateX(0deg) " +
+            "rotateY(0deg)";
+
+    }
+);
+
+
+/* =====================================================
+   FORM SUBMIT
+===================================================== */
+
+detectionForm.addEventListener(
+    "submit",
+    function(event) {
+
+        if (!imageInput.files.length) {
+
+            event.preventDefault();
+
+            showError(
+                "Please select a crop leaf image first."
+            );
+
+            return;
+
+        }
+
+
+        analyzeButton.disabled =
+            true;
+
+
+        analyzeButton.classList.add(
+            "loading"
+        );
+
+
+        uploadZone.classList.add(
+            "scanning"
+        );
+
+
+        analyzeButton.innerHTML =
+            '<span class="spinner"></span>' +
+            'AI Analyzing...';
+
+
+    }
+);
+
+
+/* =====================================================
+   LANGUAGE
+===================================================== */
+
+function changeLanguage(language) {
+
+    if (!language) {
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "/set-language/" +
+        language;
+
+}
+
+</script>
+
+<script>
+
+/* =========================================
+   MOBILE 3-DOT MENU
+========================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const menuButton =
+        document.getElementById("mobileMenuButton");
+
+    const menu =
+        document.getElementById("mobileMenu");
+
+
+    if (!menuButton || !menu) {
+        return;
+    }
+
+
+    menuButton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        const isOpen =
+            menu.classList.toggle("show");
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+    });
+
+
+    /* Close when clicking outside */
+
+    document.addEventListener("click", function (event) {
+
+        if (
+            !menu.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        }
+
+    });
+
+
+    /* Close after selecting a link */
+
+    menu.querySelectorAll("a").forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            menu.classList.remove("show");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+        });
+
+    });
+
+});
+
+</script>
+
+</body>
+
+
+</body>
+
+</html>

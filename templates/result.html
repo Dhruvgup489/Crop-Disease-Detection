@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Detection Result | AgroZyen AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            🌱 AgroZyen <span>AI</span>
+        </div>
+
+        <nav>
+           <a href="/">{{ t.home }}</a>
+
+<a href="/detect" class="active">
+    {{ t.detect }}
+</a>
+
+<a href="/performance">
+    {{ t.performance }}
+</a>
+
+<a href="/about">
+    {{ t.about }}
+</a>
+<a href="/review">
+    Reviews
+</a>
+        </nav>
+
+        <a href="/detect" class="nav-button">
+            New Detection
+        </a>
+
+    </header>
+
+
+    <!-- ================= RESULT PAGE ================= -->
+
+    <main class="result-page">
+
+        <!-- Header -->
+
+        <div class="result-header">
+
+            <p class="tagline">
+                AI ANALYSIS COMPLETE
+            </p>
+
+            <h1>
+                Disease Detection Result
+            </h1>
+
+            <p>
+                Here is the result generated from your uploaded crop image.
+            </p>
+
+        </div>
+
+
+        <!-- Result Card -->
+
+        <div class="result-card">
+
+
+            <!-- ================= IMAGE ================= -->
+
+            <div class="result-image">
+
+                <img
+                    src="{{ image_path }}"
+                    alt="Uploaded crop leaf"
+                >
+
+            </div>
+
+
+            <!-- ================= RESULT INFORMATION ================= -->
+
+            <div class="result-info">
+
+
+                <!-- Status -->
+
+                {% if is_healthy %}
+
+    <div class="status healthy">
+        ✅ Healthy Crop
+    </div>
+
+{% else %}
+
+    <div class="status warning">
+        ⚠ Disease Detected
+    </div>
+
+{% endif %}
+
+
+                <!-- Disease Name -->
+
+                <h2>
+                    {{ disease }}
+                </h2>
+
+
+                <!-- Crop -->
+
+                <p class="crop-name">
+                    Crop:
+                    <strong>{{ crop_name }}</strong>
+                </p>
+
+
+                <!-- ================= CONFIDENCE ================= -->
+
+                <div class="confidence-section">
+
+                    <div class="confidence-top">
+
+                        <span>
+                            AI Confidence
+                        </span>
+
+                        <strong>
+                            {{ confidence }}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confidence-bar">
+
+                        <div
+                            class="confidence-fill"
+                            style="width: {{ confidence }}%;">
+                        </div>
+
+                    </div>
+
+
+                    <div class="confidence-level">
+
+                        Confidence Level:
+                        <strong>{{ confidence_level }}</strong>
+
+                    </div>
+
+                </div>
+
+
+                <hr>
+
+
+                <!-- ================= ABOUT ================= -->
+
+                <section class="result-details">
+
+                    <h3>
+                        {% if is_healthy %}
+                            About This Result
+                        {% else %}
+                            About This Disease
+                        {% endif %}
+                    </h3>
+
+                    <p>
+                        {{ about }}
+                    </p>
+
+
+                    <!-- Symptoms -->
+
+                    {% if not is_healthy and symptoms %}
+
+                        <h3>
+                            Symptoms
+                        </h3>
+
+                        <ul>
+
+                            {% for symptom in symptoms %}
+
+                                <li>
+                                    {{ symptom }}
+                                </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    {% endif %}
+
+
+                    <!-- Recommendation -->
+
+                    <h3>
+                        Recommendation
+                    </h3>
+
+                    <p>
+                        {{ recommendation }}
+                    </p>
+
+                </section>
+
+
+                <!-- ================= BUTTONS ================= -->
+
+                <div class="result-actions">
+
+                    <a
+                        href="/detect"
+                        class="analyze-button">
+                        🔍 Analyze Another Image
+                    </a>
+
+                    <a
+                        href="/"
+                        class="secondary-button">
+                        🏠 Back to Home
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="logo">
+            🌱 AgroZyen <span>AI</span>
+        </div>
+
+        <p>
+            AI-powered crop disease detection system.
+        </p>
+
+        <p class="copyright">
+            © 2026 AgroZyen AI| Developed by DHRUV 
+        </p>
+
+    </footer>
+
+</body>
+
+</html>
+
