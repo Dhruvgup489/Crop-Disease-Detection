@@ -2,48 +2,34 @@
 <html lang="{{ current_language }}">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Help & Support | AgroZyen AI
-    </title>
+    <title>Help & Support | AgroZyen AI</title>
 
-
-    <!-- =====================================================
-         MAIN WEBSITE CSS
-    ====================================================== -->
-
+    <!-- MAIN WEBSITE CSS -->
     <link rel="stylesheet"
           href="{{ url_for('static', filename='css/style.css') }}">
 
-
-
-    <!-- =====================================================
-         HELP PAGE CSS
-    ====================================================== -->
-
     <style>
 
-        /* =================================================
+        /* =====================================================
            RESET
-        ================================================= */
+        ===================================================== */
 
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-
 
         html {
             scroll-behavior: smooth;
         }
 
-
         body {
-            margin: 0;
             font-family: Arial, Helvetica, sans-serif;
             color: #17351f;
             background: #f4faf5;
@@ -51,15 +37,16 @@
         }
 
 
-        /* =================================================
-           BACKGROUND
-        ================================================= */
+        /* =====================================================
+           ANIMATED BACKGROUND
+        ===================================================== */
 
         .help-background {
             position: fixed;
             inset: 0;
             overflow: hidden;
             z-index: -5;
+
             background:
                 radial-gradient(
                     circle at 10% 20%,
@@ -84,7 +71,6 @@
                 );
         }
 
-
         .background-orb {
             position: absolute;
             border-radius: 50%;
@@ -93,7 +79,6 @@
             animation: floatOrb 10s ease-in-out infinite;
         }
 
-
         .orb-one {
             width: 260px;
             height: 260px;
@@ -101,7 +86,6 @@
             top: 15%;
             left: -80px;
         }
-
 
         .orb-two {
             width: 330px;
@@ -112,7 +96,6 @@
             animation-delay: 2s;
         }
 
-
         .orb-three {
             width: 190px;
             height: 190px;
@@ -121,7 +104,6 @@
             bottom: -80px;
             animation-delay: 4s;
         }
-
 
         @keyframes floatOrb {
 
@@ -136,20 +118,22 @@
         }
 
 
-
-        /* =================================================
+        /* =====================================================
            NAVBAR
-        ================================================= */
+        ===================================================== */
 
         .help-navbar {
             width: 100%;
             padding: 18px 6%;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             gap: 20px;
 
-            background: rgba(255, 255, 255, 0.78);
+            background: rgba(255, 255, 255, 0.82);
+
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
 
@@ -157,9 +141,9 @@
 
             position: sticky;
             top: 0;
+
             z-index: 1000;
         }
-
 
         .help-logo {
             font-size: 22px;
@@ -167,11 +151,9 @@
             white-space: nowrap;
         }
 
-
         .help-logo span {
             color: #4f9a5a;
         }
-
 
         .help-nav {
             display: flex;
@@ -179,583 +161,738 @@
             gap: 24px;
         }
 
-
         .help-nav a {
             text-decoration: none;
             color: #294b31;
             font-weight: 600;
-            transition: 0.25s;
+            transition: 0.25s ease;
         }
-
 
         .help-nav a:hover {
             color: #3e914d;
         }
 
-
         .help-nav a.active {
             color: #3e914d;
         }
 
-
         .help-start {
             text-decoration: none;
+
             background: #4f8f4f;
             color: white;
+
             padding: 11px 20px;
+
             border-radius: 10px;
+
             font-weight: 700;
-            transition: 0.25s;
+
+            transition: 0.25s ease;
+
             white-space: nowrap;
         }
 
-
         .help-start:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(55, 120, 65, 0.25);
+
+            box-shadow:
+                0 8px 20px rgba(55, 120, 65, 0.25);
         }
 
 
+        /* =====================================================
+           MOBILE 3 DOT MENU
+        ===================================================== */
 
-        /* =================================================
-           THREE DOT MENU
-        ================================================= */
-
-        .menu-wrapper {
-            position: relative;
+        .mobile-menu-wrapper {
             display: none;
+            position: relative;
         }
 
-
-        .menu-button {
+        .mobile-menu-button {
             width: 44px;
             height: 44px;
+
             border: 1px solid #dce9de;
             border-radius: 12px;
+
             background: white;
-            font-size: 25px;
-            cursor: pointer;
+
             color: #315b39;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+
+            font-size: 26px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 5px 18px rgba(0, 0, 0, 0.06);
+
+            transition: 0.25s ease;
         }
 
-
-        .menu-button:hover {
+        .mobile-menu-button:hover {
             background: #eef8f0;
+            transform: scale(1.04);
         }
 
-
-        .dropdown-menu {
+        .mobile-menu {
             position: absolute;
+
             right: 0;
-            top: 55px;
+            top: 54px;
+
             width: 230px;
 
-            background: rgba(255, 255, 255, 0.96);
+            padding: 10px;
+
+            background: rgba(255, 255, 255, 0.98);
+
             backdrop-filter: blur(15px);
 
             border: 1px solid #dce9de;
-            border-radius: 16px;
 
-            padding: 10px;
+            border-radius: 16px;
 
             box-shadow:
                 0 20px 50px rgba(31, 75, 40, 0.16);
 
             display: none;
+
+            z-index: 99999;
         }
 
-
-        .dropdown-menu.show {
+        .mobile-menu.show {
             display: block;
-            animation: menuShow 0.2s ease;
+
+            animation:
+                menuOpen 0.2s ease;
         }
 
+        .mobile-menu a {
+            display: flex;
+            align-items: center;
 
-        @keyframes menuShow {
+            gap: 12px;
+
+            padding: 13px 14px;
+
+            margin: 3px 0;
+
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            color: #26352b;
+
+            font-weight: 600;
+
+            transition: 0.2s ease;
+        }
+
+        .mobile-menu a:hover {
+            background: #edf7ef;
+            color: #2f7d4a;
+
+            transform: translateX(3px);
+        }
+
+        .mobile-menu a.active {
+            background: #e5f3e8;
+            color: #2f7d4a;
+        }
+
+        @keyframes menuOpen {
 
             from {
                 opacity: 0;
-                transform: translateY(-8px);
+                transform:
+                    translateY(-8px)
+                    scale(0.97);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform:
+                    translateY(0)
+                    scale(1);
             }
         }
 
 
-        .dropdown-menu a {
-            display: block;
-            padding: 12px 14px;
-            border-radius: 9px;
-            text-decoration: none;
-            color: #254c2e;
-            font-weight: 600;
-        }
-
-
-        .dropdown-menu a:hover {
-            background: #edf7ef;
-        }
-
-
-
-        /* =================================================
-           HERO
-        ================================================= */
+        /* =====================================================
+           MAIN
+        ===================================================== */
 
         .help-page {
             width: min(1150px, 92%);
             margin: auto;
-            padding: 75px 0 90px;
+
+            padding:
+                75px 0 90px;
         }
 
+
+        /* =====================================================
+           HERO
+        ===================================================== */
 
         .help-hero {
             text-align: center;
+
             max-width: 800px;
+
             margin: auto;
         }
 
-
         .help-badge {
             display: inline-block;
+
             padding: 8px 16px;
+
             border-radius: 50px;
-            background: rgba(79, 143, 79, 0.10);
+
+            background:
+                rgba(79, 143, 79, 0.10);
+
             color: #43834b;
+
             font-size: 13px;
+
             font-weight: 800;
+
             letter-spacing: 1.2px;
         }
 
-
         .help-hero h1 {
-            font-size: clamp(38px, 6vw, 65px);
-            line-height: 1.05;
-            margin: 20px 0 18px;
-        }
+            font-size:
+                clamp(38px, 6vw, 65px);
 
+            line-height: 1.05;
+
+            margin:
+                20px 0 18px;
+        }
 
         .help-hero h1 span {
             color: #4f9857;
         }
 
-
         .help-hero p {
             color: #607066;
+
             font-size: 18px;
+
             line-height: 1.7;
+
             margin-bottom: 30px;
         }
 
 
-
-        /* =================================================
+        /* =====================================================
            SEARCH
-        ================================================= */
+        ===================================================== */
 
         .help-search {
             max-width: 650px;
-            margin: 0 auto 60px;
+
+            margin:
+                0 auto 60px;
+
             position: relative;
         }
 
-
         .help-search input {
             width: 100%;
-            padding: 18px 22px 18px 52px;
-            border: 1px solid #d6e5d9;
+
+            padding:
+                18px 22px 18px 52px;
+
+            border:
+                1px solid #d6e5d9;
+
             border-radius: 16px;
+
             outline: none;
 
-            background: rgba(255, 255, 255, 0.88);
+            background:
+                rgba(255, 255, 255, 0.88);
 
             font-size: 16px;
 
             box-shadow:
-                0 15px 40px rgba(43, 95, 53, 0.08);
+                0 15px 40px
+                rgba(43, 95, 53, 0.08);
         }
-
 
         .help-search input:focus {
             border-color: #67a86d;
-            box-shadow:
-                0 0 0 4px rgba(79, 143, 79, 0.10);
-        }
 
+            box-shadow:
+                0 0 0 4px
+                rgba(79, 143, 79, 0.10);
+        }
 
         .search-icon {
             position: absolute;
+
             left: 20px;
             top: 50%;
-            transform: translateY(-50%);
+
+            transform:
+                translateY(-50%);
+
             font-size: 20px;
         }
 
 
-
-        /* =================================================
+        /* =====================================================
            SUPPORT CARDS
-        ================================================= */
+        ===================================================== */
 
         .support-grid {
             display: grid;
+
             grid-template-columns:
                 repeat(3, 1fr);
+
             gap: 22px;
+
             margin-bottom: 80px;
         }
 
-
         .support-card {
-            position: relative;
             padding: 30px;
+
             border-radius: 22px;
 
-            background: rgba(255, 255, 255, 0.78);
+            background:
+                rgba(255, 255, 255, 0.78);
+
             backdrop-filter: blur(15px);
 
-            border: 1px solid rgba(100, 150, 110, 0.16);
+            border:
+                1px solid
+                rgba(100, 150, 110, 0.16);
 
             box-shadow:
-                0 18px 45px rgba(37, 89, 46, 0.08);
+                0 18px 45px
+                rgba(37, 89, 46, 0.08);
 
             transition:
-                transform 0.3s,
-                box-shadow 0.3s;
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
         }
-
 
         .support-card:hover {
-            transform: translateY(-8px);
-            box-shadow:
-                0 25px 55px rgba(37, 89, 46, 0.14);
-        }
+            transform:
+                translateY(-8px);
 
+            box-shadow:
+                0 25px 55px
+                rgba(37, 89, 46, 0.14);
+        }
 
         .support-icon {
             width: 58px;
             height: 58px;
+
             display: flex;
+
             align-items: center;
             justify-content: center;
 
             border-radius: 16px;
+
             background: #edf8ef;
 
             font-size: 28px;
+
             margin-bottom: 20px;
         }
 
-
         .support-card h3 {
-            margin: 0 0 10px;
+            margin:
+                0 0 10px;
+
             font-size: 21px;
         }
 
-
         .support-card p {
             color: #69756d;
+
             line-height: 1.6;
+
             margin-bottom: 20px;
         }
 
-
         .support-link {
             color: #448a4e;
+
             font-weight: 700;
+
             text-decoration: none;
         }
 
 
-
-        /* =================================================
-           FAQ
-        ================================================= */
+        /* =====================================================
+           SECTION HEADING
+        ===================================================== */
 
         .section-heading {
             text-align: center;
+
             margin-bottom: 35px;
         }
 
-
-        .section-heading .small {
+        .section-heading .small,
+        .section-heading > span {
             color: #4f9257;
+
             font-weight: 800;
+
             letter-spacing: 1px;
+
             font-size: 13px;
         }
 
-
         .section-heading h2 {
             font-size: 36px;
-            margin: 10px 0;
-        }
 
+            margin:
+                10px 0;
+        }
 
         .section-heading p {
             color: #68756c;
         }
 
 
-        .faq-container {
-            max-width: 850px;
-            margin: 0 auto 80px;
+        /* =====================================================
+           FAQ
+        ===================================================== */
+
+        .faq-section {
+            max-width: 950px;
+
+            margin:
+                80px auto;
+
+            padding: 20px;
         }
 
+        .faq-container {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 14px;
+        }
 
         .faq-item {
-            background: rgba(255, 255, 255, 0.84);
-            border: 1px solid #dfeae1;
-            border-radius: 15px;
-            margin-bottom: 12px;
+            background:
+                rgba(255, 255, 255, 0.95);
+
+            border:
+                1px solid #dfe8df;
+
+            border-radius: 16px;
+
             overflow: hidden;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 0, 0, 0.06);
+
+            transition:
+                0.3s ease;
         }
 
+        .faq-item:hover {
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(0, 0, 0, 0.09);
+        }
 
         .faq-question {
             width: 100%;
+
             border: none;
+
             background: transparent;
-            padding: 20px;
-            text-align: left;
-            font-size: 16px;
-            font-weight: 700;
-            color: #244b2d;
-            cursor: pointer;
+
+            padding:
+                20px 22px;
 
             display: flex;
-            justify-content: space-between;
+
             align-items: center;
+
+            justify-content: space-between;
+
             gap: 20px;
+
+            text-align: left;
+
+            font-size: 17px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            color: #222;
         }
 
+        .faq-icon {
+            font-size: 25px;
 
-        .faq-question span:last-child {
-            font-size: 22px;
-            transition: transform 0.25s;
+            font-weight: 400;
+
+            transition:
+                transform 0.3s ease;
         }
-
-
-        .faq-item.open
-        .faq-question span:last-child {
-            transform: rotate(45deg);
-        }
-
 
         .faq-answer {
             max-height: 0;
+
             overflow: hidden;
-            transition: max-height 0.3s ease;
+
+            transition:
+                max-height 0.35s ease;
         }
 
-
         .faq-answer p {
-            padding: 0 20px 20px;
             margin: 0;
-            color: #66726a;
+
+            padding:
+                0 22px 20px;
+
+            color: #666;
+
             line-height: 1.7;
         }
 
+        .faq-item.active .faq-icon {
+            transform:
+                rotate(45deg);
+        }
 
 
-        /* =================================================
-           CONTACT SUPPORT
-        ================================================= */
+        /* =====================================================
+           NO RESULTS
+        ===================================================== */
+
+        .no-results {
+            display: none;
+
+            text-align: center;
+
+            padding: 30px;
+
+            color: #68756c;
+        }
+
+
+        /* =====================================================
+           CONTACT
+        ===================================================== */
+
+        #contact {
+            margin-top: 80px;
+        }
 
         .contact-section {
             display: grid;
-            grid-template-columns: 0.9fr 1.1fr;
+
+            grid-template-columns:
+                0.9fr 1.1fr;
+
             gap: 30px;
+
             align-items: stretch;
         }
 
-
         .contact-info,
         .contact-form {
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(15px);
-            border: 1px solid #dce8de;
-            border-radius: 22px;
-            padding: 35px;
-            box-shadow:
-                0 20px 50px rgba(36, 86, 44, 0.08);
-        }
+            background:
+                rgba(255, 255, 255, 0.82);
 
+            backdrop-filter: blur(15px);
+
+            border:
+                1px solid #dce8de;
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 20px 50px
+                rgba(36, 86, 44, 0.08);
+        }
 
         .contact-info h2,
         .contact-form h2 {
             margin-top: 0;
+
             font-size: 28px;
         }
 
-
         .contact-info p {
             color: #68756c;
+
             line-height: 1.7;
         }
 
-
         .contact-detail {
             display: flex;
+
             gap: 15px;
+
             align-items: flex-start;
+
             margin-top: 25px;
         }
-
 
         .contact-detail-icon {
             width: 44px;
             height: 44px;
+
             display: flex;
+
             justify-content: center;
             align-items: center;
+
             background: #edf7ef;
+
             border-radius: 12px;
+
             font-size: 20px;
+
             flex-shrink: 0;
         }
 
-
         .contact-detail strong {
             display: block;
+
             margin-bottom: 5px;
         }
 
-
         .contact-detail span {
             color: #6b776f;
+
             font-size: 14px;
         }
 
+
+        /* =====================================================
+           FORM
+        ===================================================== */
 
         .form-group {
             margin-bottom: 18px;
         }
 
-
         .form-group label {
             display: block;
+
             font-weight: 700;
+
             margin-bottom: 8px;
         }
-
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #d4e2d6;
+
+            padding:
+                13px 14px;
+
+            border:
+                1px solid #d4e2d6;
+
             border-radius: 10px;
+
             font: inherit;
+
             outline: none;
+
             background: white;
         }
 
-
         .form-group textarea {
             min-height: 130px;
+
             resize: vertical;
         }
-
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             border-color: #62a56a;
-            box-shadow:
-                0 0 0 3px rgba(79, 143, 79, 0.10);
-        }
 
+            box-shadow:
+                0 0 0 3px
+                rgba(79, 143, 79, 0.10);
+        }
 
         .send-button {
             width: 100%;
-            border: none;
-            padding: 15px;
-            border-radius: 11px;
-            background: #4f8f4f;
-            color: white;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.25s;
-        }
 
+            border: none;
+
+            padding: 15px;
+
+            border-radius: 11px;
+
+            background: #4f8f4f;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+        }
 
         .send-button:hover {
-            transform: translateY(-2px);
-            box-shadow:
-                0 10px 25px rgba(62, 125, 69, 0.22);
-        }
+            transform:
+                translateY(-2px);
 
+            box-shadow:
+                0 10px 25px
+                rgba(62, 125, 69, 0.22);
+        }
 
         .form-success {
             display: none;
+
             padding: 15px;
+
             margin-top: 15px;
+
             background: #edf8ef;
+
             border-radius: 10px;
+
             color: #34713d;
+
             font-weight: 600;
         }
 
 
-
-        /* =================================================
-           FOOTER
-        ================================================= */
-
-        .help-footer {
-            margin-top: 70px;
-            padding: 35px 20px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.75);
-            border-top: 1px solid #dce8de;
-        }
-
-
-        .help-footer .logo {
-            font-size: 20px;
-            font-weight: 800;
-        }
-
-
-        .help-footer .logo span {
-            color: #4f9857;
-        }
-
-
-        .help-footer p {
-            color: #68756c;
-        }
-
-
-        .copyright {
-            font-size: 13px;
-        }
-
-
-
-        /* =================================================
-           NO FAQ RESULT
-        ================================================= */
-
-        .no-results {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            color: #68756c;
-        }
-
-
-
-        /* =================================================
+       
+        /* =====================================================
            RESPONSIVE
-        ================================================= */
+        ===================================================== */
 
         @media (max-width: 900px) {
 
@@ -763,12 +900,12 @@
                 display: none;
             }
 
-            .menu-wrapper {
-                display: block;
-            }
-
             .help-start {
                 display: none;
+            }
+
+            .mobile-menu-wrapper {
+                display: block;
             }
 
             .support-grid {
@@ -778,18 +915,23 @@
             .contact-section {
                 grid-template-columns: 1fr;
             }
-
         }
 
 
         @media (max-width: 600px) {
 
             .help-navbar {
-                padding: 15px 4%;
+                padding:
+                    15px 4%;
+            }
+
+            .help-logo {
+                font-size: 19px;
             }
 
             .help-page {
                 width: 92%;
+
                 padding-top: 50px;
             }
 
@@ -807,253 +949,52 @@
                 font-size: 30px;
             }
 
+            .faq-section {
+                margin:
+                    50px auto;
+
+                padding: 15px;
+            }
+
+            .faq-question {
+                font-size: 15px;
+
+                padding: 17px;
+            }
+
+            .footer-logo {
+                font-size: 24px;
+            }
+
+            .footer-tagline {
+                font-size: 13px;
+            }
+
+            .footer-description {
+                font-size: 13px;
+            }
+
+            .footer-navigation {
+                gap:
+                    14px 20px;
+
+                margin:
+                    28px 0;
+            }
+
+            .footer-navigation a {
+                font-size: 13px;
+            }
+
+            .ai-badge {
+                font-size: 12px;
+
+                padding:
+                    9px 16px;
+            }
         }
-        <style>
-
-/* ================= FAQ ================= */
-
-.faq-section {
-    max-width: 950px;
-    margin: 80px auto;
-    padding: 20px;
-}
-
-.section-heading {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.section-heading span {
-    display: inline-block;
-    color: #4f8f4f;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-}
-
-.section-heading h2 {
-    font-size: 38px;
-    margin: 5px 0 12px;
-}
-
-.section-heading p {
-    color: #666;
-    font-size: 16px;
-}
-
-.faq-container {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.faq-item {
-    background: rgba(255,255,255,0.95);
-    border: 1px solid #dfe8df;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-    transition: 0.3s ease;
-}
-
-.faq-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.09);
-}
-
-.faq-question {
-    width: 100%;
-    border: none;
-    background: transparent;
-    padding: 20px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    text-align: left;
-    font-size: 17px;
-    font-weight: 700;
-    cursor: pointer;
-    color: #222;
-}
-
-.faq-icon {
-    font-size: 25px;
-    font-weight: 400;
-    transition: transform 0.3s ease;
-}
-
-.faq-answer {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-}
-
-.faq-answer p {
-    margin: 0;
-    padding: 0 22px 20px;
-    color: #666;
-    line-height: 1.7;
-}
-
-.faq-item.active .faq-answer {
-    max-height: 300px;
-}
-
-.faq-item.active .faq-icon {
-    transform: rotate(45deg);
-}
-
-@media (max-width: 600px) {
-
-    .faq-section {
-        margin: 50px auto;
-        padding: 15px;
-    }
-
-    .section-heading h2 {
-        font-size: 30px;
-    }
-
-    .faq-question {
-        font-size: 15px;
-        padding: 17px;
-    }
-
-}
-
-</style>
 
     </style>
-
-    <style>
-/* ===============================
-   RESPONSIVE 3-DOT MENU
-================================ */
-
-.mobile-menu-wrapper {
-    display: none;
-    position: relative;
-}
-
-.mobile-menu-button {
-    width: 44px;
-    height: 44px;
-    border: none;
-    border-radius: 12px;
-    background: #f1f7f2;
-    color: #2f7d4a;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 40px;
-    transition: 0.25s ease;
-}
-
-.mobile-menu-button:hover {
-    background: #dfeee2;
-    transform: scale(1.05);
-}
-
-.mobile-menu {
-    position: absolute;
-    top: 52px;
-    right: 0;
-    width: 230px;
-    padding: 10px;
-    background: rgba(255,255,255,0.98);
-    border: 1px solid #dce7df;
-    border-radius: 16px;
-    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
-    display: none;
-    z-index: 99999;
-    backdrop-filter: blur(12px);
-}
-
-.mobile-menu.show {
-    display: block;
-    animation: menuOpen 0.2s ease;
-}
-
-.mobile-menu a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 14px;
-    margin: 3px 0;
-    border-radius: 10px;
-    text-decoration: none;
-    color: #26352b;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.mobile-menu a:hover {
-    background: #edf7ef;
-    color: #2f7d4a;
-    transform: translateX(3px);
-}
-
-.mobile-menu a.active {
-    background: #e5f3e8;
-    color: #2f7d4a;
-}
-
-@keyframes menuOpen {
-    from {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.97);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-
-/* ===============================
-   MOBILE NAVBAR
-================================ */
-
-@media (max-width: 900px) {
-
-    .navbar {
-        position: relative;
-        padding: 12px 18px;
-    }
-
-    .navbar nav {
-        display: none !important;
-    }
-
-    .navbar > .nav-button {
-        display: none;
-    }
-
-    .mobile-menu-wrapper {
-        display: block;
-        margin-left: auto;
-    }
-
-}
-
-
-/* ===============================
-   VERY SMALL SCREEN
-================================ */
-
-@media (max-width: 500px) {
-
-    .logo {
-        font-size: 18px;
-    }
-
-    .mobile-menu {
-        width: 210px;
-    }
-
-}
-</style>
 
 </head>
 
@@ -1076,13 +1017,11 @@
 </div>
 
 
-
 <!-- =====================================================
      NAVBAR
 ===================================================== -->
 
 <header class="help-navbar">
-
 
     <div class="help-logo">
         🌱 AgroZyen <span>AI</span>
@@ -1126,62 +1065,58 @@
         {{ t.get_started }}
 
     </a>
-    <!-- ===============================
-     MOBILE 3-DOT MENU
-================================ -->
-
-<div class="mobile-menu-wrapper">
-
-    <button
-        type="button"
-        class="mobile-menu-button"
-        id="mobileMenuButton"
-        aria-label="Open menu"
-        aria-expanded="false">
-
-        ⋮
-
-    </button>
 
 
-    <div
-        class="mobile-menu"
-        id="mobileMenu">
+    <!-- MOBILE MENU -->
 
-        <a href="/">
-            🏠 Home
-        </a>
+    <div class="mobile-menu-wrapper">
 
-        <a href="/detect">
-            🔍 Detect Disease
-        </a>
+        <button
+            type="button"
+            class="mobile-menu-button"
+            id="mobileMenuButton"
+            aria-label="Open menu"
+            aria-expanded="false">
 
-        <a href="/performance">
-            📊 Performance
-        </a>
+            ⋮
 
-        <a href="/about">
-            ℹ️ About
-        </a>
+        </button>
 
-        <a href="/review">
-            ⭐ Reviews
-        </a>
 
-        <a href="/support">
-            🛟 Help & Support
-        </a>
+        <div
+            class="mobile-menu"
+            id="mobileMenu">
+
+            <a href="/">
+                🏠 Home
+            </a>
+
+            <a href="/detect">
+                🔍 Detect Disease
+            </a>
+
+            <a href="/performance">
+                📊 Performance
+            </a>
+
+            <a href="/about">
+                ℹ️ About
+            </a>
+
+            <a href="/review">
+                ⭐ Reviews
+            </a>
+
+            <a href="/help"
+               class="active">
+                🛟 Help & Support
+            </a>
+
+        </div>
 
     </div>
 
-</div>
-
-
-
-    
-
 </header>
-
 
 
 <!-- =====================================================
@@ -1201,12 +1136,10 @@
             🛟 AGROZYEN SUPPORT CENTER
         </div>
 
-
         <h1>
             How Can We
             <span>Help You?</span>
         </h1>
-
 
         <p>
             Find answers, learn how AgroZyen AI works,
@@ -1215,7 +1148,6 @@
         </p>
 
     </section>
-
 
 
     <!-- =================================================
@@ -1236,7 +1168,6 @@
     </div>
 
 
-
     <!-- =================================================
          SUPPORT OPTIONS
     ================================================= -->
@@ -1255,9 +1186,9 @@
             </h3>
 
             <p>
-                Having trouble getting the right crop
-                disease result? Learn how to upload
-                a better leaf image.
+                Having trouble getting the right result?
+                Learn how to upload a clear image
+                for better AI analysis.
             </p>
 
             <a
@@ -1265,10 +1196,10 @@
                 class="support-link">
 
                 Open Detection →
+
             </a>
 
         </div>
-
 
 
         <div class="support-card">
@@ -1284,7 +1215,7 @@
             <p>
                 Understand the AgroZyen AI detection
                 process and how the model analyzes
-                crop leaf images.
+                uploaded images.
             </p>
 
             <a
@@ -1292,10 +1223,10 @@
                 class="support-link">
 
                 Learn More →
+
             </a>
 
         </div>
-
 
 
         <div class="support-card">
@@ -1310,7 +1241,8 @@
 
             <p>
                 Share your experience, suggestions,
-                or feedback to help improve AgroZyen AI.
+                or feedback to help improve
+                AgroZyen AI.
             </p>
 
             <a
@@ -1318,197 +1250,34 @@
                 class="support-link">
 
                 Write a Review →
+
             </a>
 
         </div>
 
     </section>
-    <!-- ================= FAQ SECTION ================= -->
-
-<section class="faq-section">
-
-    <div class="section-heading">
-        <span>❓ FAQ</span>
-        <h2>Frequently Asked Questions</h2>
-        <p>
-            Find quick answers to common questions about AgroZyen AI.
-        </p>
-    </div>
-
-
-    <div class="faq-container">
-
-        <!-- FAQ 1 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>What is AgroZyen AI?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    AgroZyen AI is an AI-powered crop disease detection
-                    system that analyzes crop leaf images and provides
-                    disease prediction, confidence, and recommendations.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 2 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>How do I detect a crop disease?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    Go to the Detect page, upload a clear image of the
-                    crop leaf, and click the Analyze Image button.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 3 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>What type of image should I upload?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    Upload a clear JPG, JPEG, or PNG image of the crop
-                    leaf. Avoid blurry, extremely dark, or unrelated images.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 4 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>What does AI confidence mean?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    AI confidence represents how strongly the model
-                    predicts the detected result based on the uploaded
-                    image.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 5 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>Can AgroZyen AI detect healthy crops?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    Yes. If the uploaded leaf appears healthy according
-                    to the trained model, the result can indicate that
-                    the crop is healthy.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 6 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>Is the prediction always accurate?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    AI predictions are estimates and may not always be
-                    correct. For important agricultural decisions,
-                    consider consulting an agriculture expert.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 7 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>How can I submit a review?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    Open the Reviews page, enter your name, select a
-                    rating, write your feedback, and submit the review.
-                </p>
-            </div>
-
-        </div>
-
-
-        <!-- FAQ 8 -->
-        <div class="faq-item">
-
-            <button class="faq-question" type="button">
-                <span>Can I analyze another image?</span>
-                <span class="faq-icon">+</span>
-            </button>
-
-            <div class="faq-answer">
-                <p>
-                    Yes. After viewing a result, simply return to the
-                    Detect page and upload another crop image.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
 
 
     <!-- =================================================
          FAQ
     ================================================= -->
 
-    <section id="faq">
+    <section class="faq-section"
+             id="faq">
 
         <div class="section-heading">
 
-            <div class="small">
-                FREQUENTLY ASKED QUESTIONS
-            </div>
+            <span>
+                ❓ FAQ
+            </span>
 
             <h2>
-                Common Questions
+                Frequently Asked Questions
             </h2>
 
             <p>
-                Quick answers to common AgroZyen AI questions.
+                Find quick answers to common questions
+                about AgroZyen AI.
             </p>
 
         </div>
@@ -1528,30 +1297,28 @@
                     type="button">
 
                     <span>
-                        How do I detect a crop disease?
+                        What is AgroZyen AI?
                     </span>
 
-                    <span>
+                    <span class="faq-icon">
                         +
                     </span>
 
                 </button>
 
-
                 <div class="faq-answer">
 
                     <p>
-                        Open the Detect Disease page,
-                        upload a clear image of a supported
-                        crop leaf, and click Analyze Image.
-                        The AI model will process the image
-                        and display the prediction.
+                        AgroZyen AI is an AI-powered
+                        crop disease detection system
+                        that analyzes uploaded images
+                        and provides a prediction with
+                        confidence information.
                     </p>
 
                 </div>
 
             </div>
-
 
 
             <!-- FAQ 2 -->
@@ -1563,27 +1330,28 @@
                     type="button">
 
                     <span>
-                        Which crops are supported?
+                        How do I detect a crop disease?
                     </span>
 
-                    <span>
+                    <span class="faq-icon">
                         +
                     </span>
 
                 </button>
 
-
                 <div class="faq-answer">
 
                     <p>
-                        Your current AgroZyen AI model supports
-                        Corn, Potato, and Tomato leaf classes.
+                        Open the Detect Disease page,
+                        upload a clear image, and click
+                        the Analyze Image button.
+                        The AI model will process the
+                        image and display the prediction.
                     </p>
 
                 </div>
 
             </div>
-
 
 
             <!-- FAQ 3 -->
@@ -1598,25 +1366,25 @@
                         What type of image should I upload?
                     </span>
 
-                    <span>
+                    <span class="faq-icon">
                         +
                     </span>
 
                 </button>
 
-
                 <div class="faq-answer">
 
                     <p>
-                        Use a clear JPG, JPEG, or PNG image.
-                        Try to keep the leaf visible, well-lit,
-                        and reasonably close to the camera.
+                        Upload a clear JPG, JPEG, or PNG
+                        image. Keep the subject visible,
+                        well-lit, and reasonably close to
+                        the camera. Avoid blurry or
+                        unrelated images.
                     </p>
 
                 </div>
 
             </div>
-
 
 
             <!-- FAQ 4 -->
@@ -1628,29 +1396,28 @@
                     type="button">
 
                     <span>
-                        Why did the AI give an unexpected result?
+                        What does AI confidence mean?
                     </span>
 
-                    <span>
+                    <span class="faq-icon">
                         +
                     </span>
 
                 </button>
 
-
                 <div class="faq-answer">
 
                     <p>
-                        Image quality, lighting, background,
-                        leaf position, and model limitations can
-                        affect the prediction. Upload a clear
-                        leaf image with minimal background.
+                        AI confidence represents how
+                        strongly the model predicts the
+                        displayed result based on the
+                        uploaded image. It is not a
+                        guarantee of accuracy.
                     </p>
 
                 </div>
 
             </div>
-
 
 
             <!-- FAQ 5 -->
@@ -1662,29 +1429,29 @@
                     type="button">
 
                     <span>
-                        Is the AI prediction always correct?
+                        Why did the AI give an unexpected result?
                     </span>
 
-                    <span>
+                    <span class="faq-icon">
                         +
                     </span>
 
                 </button>
 
-
                 <div class="faq-answer">
 
                     <p>
-                        No AI classifier should be treated as
-                        perfect. The displayed confidence is the
-                        model's prediction confidence, not a
-                        guarantee of a real-world diagnosis.
+                        Image quality, lighting,
+                        background, positioning,
+                        image similarity, and model
+                        limitations can affect the
+                        prediction. Try uploading a
+                        clearer image.
                     </p>
 
                 </div>
 
             </div>
-
 
 
             <!-- FAQ 6 -->
@@ -1696,21 +1463,23 @@
                     type="button">
 
                     <span>
-                        How can I send feedback?
+                        Is the AI prediction always correct?
                     </span>
 
-                    <span>
+                    <span class="faq-icon">
                         +
                     </span>
 
                 </button>
 
-
                 <div class="faq-answer">
 
                     <p>
-                        Use the Reviews page to submit your
-                        experience, rating, and suggestions.
+                        No AI classifier should be
+                        considered perfect. The displayed
+                        confidence is the model's prediction
+                        confidence and should not be treated
+                        as a guaranteed diagnosis.
                     </p>
 
                 </div>
@@ -1718,6 +1487,71 @@
             </div>
 
 
+            <!-- FAQ 7 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        Can I analyze another image?
+                    </span>
+
+                    <span class="faq-icon">
+                        +
+                    </span>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Yes. Return to the Detect Disease
+                        page and upload another image
+                        whenever you want to perform
+                        another analysis.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- FAQ 8 -->
+
+            <div class="faq-item">
+
+                <button
+                    class="faq-question"
+                    type="button">
+
+                    <span>
+                        How can I submit a review?
+                    </span>
+
+                    <span class="faq-icon">
+                        +
+                    </span>
+
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Open the Reviews page, enter
+                        your name, select a rating,
+                        write your feedback, and
+                        submit your review.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- NO RESULTS -->
 
             <div
                 class="no-results"
@@ -1727,11 +1561,9 @@
 
             </div>
 
-
         </div>
 
     </section>
-
 
 
     <!-- =================================================
@@ -1739,7 +1571,6 @@
     ================================================= -->
 
     <section id="contact">
-
 
         <div class="section-heading">
 
@@ -1756,7 +1587,6 @@
             </p>
 
         </div>
-
 
 
         <div class="contact-section">
@@ -1776,7 +1606,6 @@
                     and provide as much useful information
                     as possible.
                 </p>
-
 
 
                 <div class="contact-detail">
@@ -1800,7 +1629,6 @@
                 </div>
 
 
-
                 <div class="contact-detail">
 
                     <div class="contact-detail-icon">
@@ -1820,7 +1648,6 @@
                     </div>
 
                 </div>
-
 
 
                 <div class="contact-detail">
@@ -1846,7 +1673,6 @@
             </div>
 
 
-
             <!-- CONTACT FORM -->
 
             <div class="contact-form">
@@ -1855,9 +1681,7 @@
                     Send a Message
                 </h2>
 
-
-                <form
-                    id="supportForm">
+                <form id="supportForm">
 
 
                     <div class="form-group">
@@ -1875,7 +1699,6 @@
                     </div>
 
 
-
                     <div class="form-group">
 
                         <label for="supportEmail">
@@ -1889,7 +1712,6 @@
                             required>
 
                     </div>
-
 
 
                     <div class="form-group">
@@ -1906,30 +1728,29 @@
                                 Select a topic
                             </option>
 
-                            <option>
+                            <option value="Disease Detection">
                                 Disease Detection
                             </option>
 
-                            <option>
+                            <option value="Upload Problem">
                                 Upload Problem
                             </option>
 
-                            <option>
+                            <option value="Prediction Problem">
                                 Prediction Problem
                             </option>
 
-                            <option>
+                            <option value="Website Problem">
                                 Website Problem
                             </option>
 
-                            <option>
+                            <option value="General Question">
                                 General Question
                             </option>
 
                         </select>
 
                     </div>
-
 
 
                     <div class="form-group">
@@ -1944,7 +1765,6 @@
                             required></textarea>
 
                     </div>
-
 
 
                     <button
@@ -1966,7 +1786,6 @@
 
                     </div>
 
-
                 </form>
 
             </div>
@@ -1975,34 +1794,109 @@
 
     </section>
 
-
 </main>
 
 
-
 <!-- =====================================================
-     FOOTER
+     PERSONALIZED FOOTER
 ===================================================== -->
 
 <footer class="help-footer">
 
+    <div class="footer-content">
 
-    <div class="logo">
-        🌱 AgroZyen <span>AI</span>
+
+        <!-- BRAND -->
+
+        <div class="footer-brand">
+
+            <div class="footer-logo">
+                🌱 <span>AgroZyen AI</span>
+            </div>
+
+            <p class="footer-tagline">
+                Smart Agriculture • Artificial Intelligence • Crop Health
+            </p>
+
+            <p class="footer-description">
+                Empowering smarter agricultural decisions through
+                AI-powered image analysis and intelligent technology.
+            </p>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <div class="footer-navigation">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/detect">
+                Detect Disease
+            </a>
+
+            <a href="/performance">
+                Performance
+            </a>
+
+            <a href="/about">
+                About
+            </a>
+
+            <a href="/review">
+                Reviews
+            </a>
+
+            <a href="/help">
+                Help & Support
+            </a>
+
+        </div>
+
+
+        <!-- AI BADGE -->
+
+        <div class="footer-ai">
+
+            <div class="ai-badge">
+                ✦ AI-Powered Agricultural Intelligence
+            </div>
+
+        </div>
+
+
+        <!-- DIVIDER -->
+
+        <div class="footer-divider"></div>
+
+
+        <!-- DEVELOPER -->
+
+        <div class="footer-developer">
+
+            <p>
+                Developed with ❤️ by
+                <strong>DHRUV</strong>
+            </p>
+
+        </div>
+
+
+        <!-- COPYRIGHT -->
+
+        <div class="copyright">
+
+            © 2026 AgroZyen AI.
+            All Rights Reserved.
+
+        </div>
+
     </div>
 
-
-    <p>
-        {{ t.footer }}
-    </p>
-
-
-    <p class="copyright">
-        © 2026 AgroZyen AI | Developed by DHRUV
-    </p>
-
 </footer>
-
 
 
 <!-- =====================================================
@@ -2013,41 +1907,110 @@
 
 
 /* =====================================================
-   THREE DOT MENU
+   MOBILE 3-DOT MENU
 ===================================================== */
 
-const menuButton =
-    document.getElementById("menuButton");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-const dropdownMenu =
-    document.getElementById("dropdownMenu");
+        const menuButton =
+            document.getElementById(
+                "mobileMenuButton"
+            );
+
+        const menu =
+            document.getElementById(
+                "mobileMenu"
+            );
 
 
-if (menuButton && dropdownMenu) {
-
-    menuButton.addEventListener(
-        "click",
-        function (event) {
-
-            event.stopPropagation();
-
-            dropdownMenu.classList.toggle("show");
-
+        if (!menuButton || !menu) {
+            return;
         }
-    );
 
 
-    document.addEventListener(
-        "click",
-        function () {
+        /* OPEN / CLOSE MENU */
 
-            dropdownMenu.classList.remove("show");
+        menuButton.addEventListener(
+            "click",
+            function (event) {
 
-        }
-    );
+                event.stopPropagation();
 
-}
+                const isOpen =
+                    menu.classList.toggle(
+                        "show"
+                    );
 
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    isOpen
+                        ? "true"
+                        : "false"
+                );
+
+            }
+        );
+
+
+        /* CLOSE OUTSIDE */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !menu.contains(
+                        event.target
+                    ) &&
+                    !menuButton.contains(
+                        event.target
+                    )
+                ) {
+
+                    menu.classList.remove(
+                        "show"
+                    );
+
+                    menuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* CLOSE AFTER CLICK */
+
+        menu.querySelectorAll("a")
+            .forEach(
+                function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            menu.classList.remove(
+                                "show"
+                            );
+
+                            menuButton.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+    }
+);
 
 
 /* =====================================================
@@ -2055,65 +2018,85 @@ if (menuButton && dropdownMenu) {
 ===================================================== */
 
 const faqQuestions =
-    document.querySelectorAll(".faq-question");
-
-
-faqQuestions.forEach(function (question) {
-
-    question.addEventListener(
-        "click",
-        function () {
-
-            const item =
-                this.parentElement;
-
-            const answer =
-                item.querySelector(".faq-answer");
-
-
-            /* Close other FAQ items */
-
-            document
-                .querySelectorAll(".faq-item.open")
-                .forEach(function (openItem) {
-
-                    if (openItem !== item) {
-
-                        openItem.classList.remove("open");
-
-                        const openAnswer =
-                            openItem.querySelector(".faq-answer");
-
-                        openAnswer.style.maxHeight =
-                            null;
-
-                    }
-
-                });
-
-
-            /* Toggle current item */
-
-            item.classList.toggle("open");
-
-
-            if (item.classList.contains("open")) {
-
-                answer.style.maxHeight =
-                    answer.scrollHeight + "px";
-
-            } else {
-
-                answer.style.maxHeight =
-                    null;
-
-            }
-
-        }
+    document.querySelectorAll(
+        ".faq-question"
     );
 
-});
 
+faqQuestions.forEach(
+    function (question) {
+
+        question.addEventListener(
+            "click",
+            function () {
+
+                const currentItem =
+                    this.closest(
+                        ".faq-item"
+                    );
+
+                const currentAnswer =
+                    currentItem.querySelector(
+                        ".faq-answer"
+                    );
+
+
+                /* CLOSE OTHER ITEMS */
+
+                document
+                    .querySelectorAll(
+                        ".faq-item.active"
+                    )
+                    .forEach(
+                        function (item) {
+
+                            if (
+                                item !== currentItem
+                            ) {
+
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                                const answer =
+                                    item.querySelector(
+                                        ".faq-answer"
+                                    );
+
+                                answer.style.maxHeight =
+                                    null;
+                            }
+
+                        }
+                    );
+
+
+                /* TOGGLE CURRENT */
+
+                const isActive =
+                    currentItem.classList.toggle(
+                        "active"
+                    );
+
+
+                if (isActive) {
+
+                    currentAnswer.style.maxHeight =
+                        currentAnswer.scrollHeight
+                        + "px";
+
+                } else {
+
+                    currentAnswer.style.maxHeight =
+                        null;
+
+                }
+
+            }
+        );
+
+    }
+);
 
 
 /* =====================================================
@@ -2121,13 +2104,19 @@ faqQuestions.forEach(function (question) {
 ===================================================== */
 
 const faqSearch =
-    document.getElementById("faqSearch");
+    document.getElementById(
+        "faqSearch"
+    );
 
 const faqItems =
-    document.querySelectorAll(".faq-item");
+    document.querySelectorAll(
+        ".faq-item"
+    );
 
 const noResults =
-    document.getElementById("noResults");
+    document.getElementById(
+        "noResults"
+    );
 
 
 if (faqSearch) {
@@ -2141,34 +2130,38 @@ if (faqSearch) {
                     .toLowerCase()
                     .trim();
 
-
             let visibleCount = 0;
 
 
-            faqItems.forEach(function (item) {
+            faqItems.forEach(
+                function (item) {
 
-                const text =
-                    item.innerText.toLowerCase();
+                    const text =
+                        item.innerText
+                            .toLowerCase();
 
 
-                if (
-                    searchText === "" ||
-                    text.includes(searchText)
-                ) {
+                    if (
+                        searchText === "" ||
+                        text.includes(
+                            searchText
+                        )
+                    ) {
 
-                    item.style.display =
-                        "block";
+                        item.style.display =
+                            "block";
 
-                    visibleCount++;
+                        visibleCount++;
 
-                } else {
+                    } else {
 
-                    item.style.display =
-                        "none";
+                        item.style.display =
+                            "none";
+
+                    }
 
                 }
-
-            });
+            );
 
 
             if (noResults) {
@@ -2186,16 +2179,19 @@ if (faqSearch) {
 }
 
 
-
 /* =====================================================
    SUPPORT FORM
 ===================================================== */
 
 const supportForm =
-    document.getElementById("supportForm");
+    document.getElementById(
+        "supportForm"
+    );
 
 const formSuccess =
-    document.getElementById("formSuccess");
+    document.getElementById(
+        "formSuccess"
+    );
 
 
 if (supportForm) {
@@ -2209,25 +2205,36 @@ if (supportForm) {
 
             const name =
                 document
-                    .getElementById("supportName")
+                    .getElementById(
+                        "supportName"
+                    )
                     .value
                     .trim();
+
 
             const email =
                 document
-                    .getElementById("supportEmail")
+                    .getElementById(
+                        "supportEmail"
+                    )
                     .value
                     .trim();
+
 
             const topic =
                 document
-                    .getElementById("supportTopic")
+                    .getElementById(
+                        "supportTopic"
+                    )
                     .value
                     .trim();
 
+
             const message =
                 document
-                    .getElementById("supportMessage")
+                    .getElementById(
+                        "supportMessage"
+                    )
                     .value
                     .trim();
 
@@ -2244,37 +2251,37 @@ if (supportForm) {
             }
 
 
-            /*
-             * Opens the user's email application.
-             *
-             * This does not require a backend route.
-             */
-
             const subject =
                 encodeURIComponent(
-                    "AgroZyen Support - " + topic
+                    "AgroZyen Support - "
+                    + topic
                 );
 
 
             const body =
                 encodeURIComponent(
-                    "Name: " +
-                    name +
-                    "\n\nEmail: " +
-                    email +
-                    "\n\nTopic: " +
-                    topic +
-                    "\n\nMessage:\n" +
-                    message
+
+                    "Name: "
+                    + name
+
+                    + "\n\nEmail: "
+                    + email
+
+                    + "\n\nTopic: "
+                    + topic
+
+                    + "\n\nMessage:\n"
+                    + message
+
                 );
 
 
             window.location.href =
-                "mailto:support@agrozyen.ai" +
-                "?subject=" +
-                subject +
-                "&body=" +
-                body;
+                "mailto:support@agrozyen.ai"
+                + "?subject="
+                + subject
+                + "&body="
+                + body;
 
 
             if (formSuccess) {
@@ -2289,124 +2296,8 @@ if (supportForm) {
 
 }
 
-
 </script>
 
-<script>
-
-/* ================= FAQ ACCORDION ================= */
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const faqQuestions =
-        document.querySelectorAll(".faq-question");
-
-    faqQuestions.forEach(function (question) {
-
-        question.addEventListener("click", function () {
-
-            const currentItem =
-                this.parentElement;
-
-            const allItems =
-                document.querySelectorAll(".faq-item");
-
-            allItems.forEach(function (item) {
-
-                if (item !== currentItem) {
-                    item.classList.remove("active");
-                }
-
-            });
-
-            currentItem.classList.toggle("active");
-
-        });
-
-    });
-
-});
-
-</script>
-
-<script>
-
-/* =========================================
-   MOBILE 3-DOT MENU
-========================================= */
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const menuButton =
-        document.getElementById("mobileMenuButton");
-
-    const menu =
-        document.getElementById("mobileMenu");
-
-
-    if (!menuButton || !menu) {
-        return;
-    }
-
-
-    menuButton.addEventListener("click", function (event) {
-
-        event.stopPropagation();
-
-        const isOpen =
-            menu.classList.toggle("show");
-
-        menuButton.setAttribute(
-            "aria-expanded",
-            isOpen ? "true" : "false"
-        );
-
-    });
-
-
-    /* Close when clicking outside */
-
-    document.addEventListener("click", function (event) {
-
-        if (
-            !menu.contains(event.target) &&
-            !menuButton.contains(event.target)
-        ) {
-
-            menu.classList.remove("show");
-
-            menuButton.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-        }
-
-    });
-
-
-    /* Close after selecting a link */
-
-    menu.querySelectorAll("a").forEach(function (link) {
-
-        link.addEventListener("click", function () {
-
-            menu.classList.remove("show");
-
-            menuButton.setAttribute(
-                "aria-expanded",
-                "false"
-            );
-
-        });
-
-    });
-
-});
-
-</script>
-
-</body>
 </body>
 
 </html>

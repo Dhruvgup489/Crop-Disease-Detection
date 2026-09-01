@@ -647,7 +647,7 @@ footer {
             #123d23
         );
 
-    color: white;
+    color: rgb(3, 76, 14);
 
     text-align: center;
 }
@@ -2491,6 +2491,13 @@ body.about-page-body {
         linear-gradient(135deg, #fff9ed 0%, #fff3d8 50%, #fffdf7 100%);
 }
 
+/* ABOUT */
+body.support-page-body {
+    background:
+        radial-gradient(circle at 15% 15%, rgba(255, 180, 70, 0.20), transparent 30%),
+        linear-gradient(135deg, #fff9ed 0%, #fff3d8 50%, #fffdf7 100%);
+}
+
 
 /* =====================================================
    KEEP CONTENT CARDS WHITE
@@ -2696,7 +2703,7 @@ body {
 }
 
 .dropdown-menu a:hover {
-    background: #f1f7f2;
+    background: #01380b;
 }
 
 
