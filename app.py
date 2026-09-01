@@ -1,6 +1,8 @@
 
 import os
 import json
+import base64
+import mimetypes
 import numpy as np
 import onnxruntime as ort
 
@@ -1415,7 +1417,7 @@ def set_language(language):
 
 MODEL_PATH = "model/crop_disease_model.onnx"
 
-UPLOAD_FOLDER = "static/uploads"
+UPLOAD_FOLDER = "/tmp/agrozyen_uploads"
 
 REVIEWS_FILE = "reviews.json"
 
@@ -1985,8 +1987,6 @@ def predict():
         UPLOAD_FOLDER,
         filename
     )
-
-
     try:
 
         file.save(
@@ -2320,61 +2320,47 @@ def predict():
                 }
             )
         )
-
-
-        # -------------------------------------------------
-        # RESULT PAGE
-        # -------------------------------------------------
-
+        
+         # -------------------------------------------------
+                # RESULT PAGE
+                # -------------------------------------------------
+        with open(image_path, "rb") as image_file:
+            image_base64 = base64.b64encode(
+        image_file.read()
+    ).decode("utf-8")
+        image_mime_type = mimetypes.guess_type(
+            image_path
+        )[0] or "image/jpeg"
+        image_data_url = (
+            f"data:{image_mime_type};base64,{image_base64}"
+        )
         return render_template(
-
             "result.html",
-
-            image_path="/" + image_path.replace(
-                "\\",
-                "/"
-            ),
-
+            image_path=image_data_url,
             disease=disease_display,
-
             crop=crop_display,
-
             confidence=round(
                 confidence,
                 2
             ),
-
             confidence_level=translations.get(
                 confidence_key,
                 confidence_level
             ),
-
             is_healthy=is_healthy,
-
             about=info["about"],
-
             symptoms=info["symptoms"],
-
             recommendation=info["recommendation"],
-
             disease_key=disease_key,
-
             confidence_key=confidence_key,
-
             invalid_image=False
-
         )
-
-
     except Exception as e:
-
         print(
             "Prediction Error:",
             e
         )
-
         language = get_current_language()
-
         return TRANSLATIONS[
             language
         ].get(
