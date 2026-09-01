@@ -2,7 +2,7 @@
 import os
 import json
 import numpy as np
-import tensorflow as tf
+import onnxruntime as ort
 
 from PIL import Image
 from flask import (
@@ -1413,7 +1413,7 @@ def set_language(language):
 # SETTINGS
 # =========================================================
 
-MODEL_PATH = "model/crop_disease_model.keras"
+MODEL_PATH = "model/crop_disease_model.onnx"
 
 UPLOAD_FOLDER = "static/uploads"
 
@@ -1479,26 +1479,29 @@ def save_reviews(reviews):
 
 
 # =========================================================
-# LOAD MODEL
+# LOAD ONNX MODEL
 # =========================================================
 
 try:
 
-    model = tf.keras.models.load_model(
-        MODEL_PATH
+    model = ort.InferenceSession(
+        MODEL_PATH,
+        providers=["CPUExecutionProvider"]
     )
 
-    print("✅ Model loaded successfully.")
+    MODEL_INPUT_NAME = model.get_inputs()[0].name
+
+    print("Model loaded successfully.")
 
 except Exception as e:
 
     model = None
+    MODEL_INPUT_NAME = None
 
     print(
-        "❌ Model loading error:",
-        e
+        "Model loading failed:",
+        str(e)
     )
-
 
 # =========================================================
 # CLASS NAMES
@@ -2059,10 +2062,12 @@ def predict():
         # PREDICT
         # -------------------------------------------------
 
-        predictions = model.predict(
-            image_array,
-            verbose=0
-        )
+        predictions = model.run(
+    None,
+    {
+        MODEL_INPUT_NAME: image_array.astype(np.float32)
+    }
+)[0]
 
 
         # -------------------------------------------------
