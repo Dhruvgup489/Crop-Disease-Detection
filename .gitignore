@@ -10,3 +10,5 @@ venv_old/
 dataset/
 static/uploads/
 venv_old/
+
+model_env/
